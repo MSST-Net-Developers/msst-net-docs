@@ -25,7 +25,7 @@ Each principal has its own identifiers, used for identification, management and 
 
 A **user** is a basic principal that identifies all devices associated with the same person.
 
-For **authenticated users**, the user ID is derived from the MSST Unified Authentication Platform account, so every device logged in to the same account is associated with the same user principal.
+For **authenticated users**, the user ID is derived from the MSST Identity and Access System (MSST-IAS) account, so every device logged in to the same account is associated with the same user principal.
 
 For **unauthenticated users**, the user ID is derived from the current device's key, so the user is normally associated only with that device.
 

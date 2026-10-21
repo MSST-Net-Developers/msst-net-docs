@@ -1,5 +1,5 @@
 ---
-title: "Getting Started (?)"
+title: "Getting Started"
 description: "This chapter covers the basic steps for connecting to MSST-Net for the first time."
 ---
 
@@ -48,7 +48,7 @@ However, you must authenticate to use Network Mode or to apply for a custom doma
 
 ### If You Already Have an Account
 
-If you already hold an MSST Unified Authentication Platform account:
+If you already hold an MSST Identity and Access System (MSST-IAS) account:
 
 Open the client controller, click **Authenticate** on the home page, and follow the prompts to complete authentication in your browser.
 

@@ -13,7 +13,7 @@ From the coordinator's point of view, every device connected to MSST-Net is in o
 
 | State | Credential source | Available access modes |
 |---|---|---|
-| **Authenticated user** | MSST Unified Authentication Platform account | Network Mode + Room Mode |
+| **Authenticated user** | MSST Identity and Access System (MSST-IAS) account | Network Mode + Room Mode |
 | **Guest (unauthenticated)** | Temporary guest credential issued automatically by the coordinator | Room Mode only |
 
 Access authentication is **optional**: unauthenticated devices automatically join as guests and can create or join rooms right away.
@@ -22,13 +22,13 @@ Access authentication is **optional**: unauthenticated devices automatically joi
 
 ## Completing Access Authentication
 
-MSST-Net authenticates through the MSST Unified Authentication Platform's **device authorization flow**, so you never need to enter your username or password in the client.
+MSST-Net authenticates through the MSST Identity and Access System (MSST-IAS)'s **device authorization flow**, so you never need to enter your username or password in the client.
 
 1. Open the client controller and click **Authenticate** on the home page
 2. Click **Start Authentication**
 3. The controller opens the authentication page in your browser and shows a **verification code**
    (if the browser doesn't open automatically, copy the authentication link shown in the controller and open it manually)
-4. On the authentication page, log in to your MSST Unified Authentication Platform account and confirm the verification code
+4. On the authentication page, log in to your MSST Identity and Access System (MSST-IAS) account and confirm the verification code
 5. You're done once the controller shows **Authentication successful!**
 
 After authentication, the controller shows the **authenticated user** and the credential's expiry. To switch accounts, click **Re-authenticate**; the new credential replaces the current one.

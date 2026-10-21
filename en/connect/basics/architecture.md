@@ -17,10 +17,10 @@ MSST-Net consists of the following components:
 | Client Controller | Every connected device (or via a browser) | Graphical interface; sends requests to the core and shows its state |
 | Coordinator | MSST-Net servers | Device registration, address allocation, rooms, ezPlay hostnames, access authentication |
 | Relay | MSST-Net servers, or self-hosted | Forwards encrypted data when a direct connection isn't possible |
-| MSST Unified Authentication Platform | MSST servers | Accounts and identity authentication |
+| MSST Identity and Access System (MSST-IAS) | MSST servers | Accounts and identity authentication |
 
 ```text
-  Controller ──IPC──► Client Core ──WebSocket / HTTPS──► Coordinator ──► MSST Unified Auth Platform
+  Controller ──IPC──► Client Core ──WebSocket / HTTPS──► Coordinator ──► MSST-IAS
                      │
                      ├──UDP (direct)──────────────────► Peer device
                      └──UDP (relayed)──► Relay ───────► Peer device
@@ -77,7 +77,7 @@ The coordinator is MSST-Net's control plane. It is responsible for:
 - Deriving virtual IP addresses from device IDs and resolving address conflicts
 - Assigning ezPlay hostnames and providing `*.msst.net` resolution data
 - Creating and joining rooms, syncing members and verifying room passwords
-- Integrating with the MSST Unified Authentication Platform (OIDC device authorization flow) and issuing guest credentials
+- Integrating with the MSST-IAS (OIDC device authorization flow) and issuing guest credentials
 - Registering relays and announcing available official relays to clients
 - Managing custom `.msst.net` namespaces
 
