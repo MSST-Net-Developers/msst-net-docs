@@ -42,7 +42,7 @@ MSST-Net 提供以下安装方式：
 
 下载地址：
 
-[下载 MSST-Net 客户端安装器](https://github.com/MSST-Net-Developers/msst-net-client-installer/releases)
+[下载 MSST-Net 客户端安装器](https://github.com/MSST-Net-Developers/msst-net-installer-31x/releases)
 
 ---
 
@@ -50,7 +50,9 @@ MSST-Net 提供以下安装方式：
 
 如果您希望手动安装客户端，请下载客户端组件：
 
-[下载 MSST-Net 客户端组件](https://github.com/MSST-Net-Developers/msst-net-client-release/releases)
+[下载 MSST-Net 客户端核心](https://github.com/MSST-Net-Developers/msst-net-core-31x/releases)
+
+[下载 MSST-Net 客户端控制器](https://github.com/MSST-Net-Developers/msst-net-controller-31x/releases)
 
 ---
 

@@ -9,7 +9,7 @@ hero:
   actions:
     - theme: brand
       text: 安装 MSST-Net 客户端
-      link: https://github.com/MSST-Net-Developers/msst-net-client-installer
+      link: https://github.com/MSST-Net-Developers/msst-net-installer-31x/releases
     - theme: alt
       text: 说明文档
       link: /connect/start
