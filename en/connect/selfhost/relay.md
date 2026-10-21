@@ -29,9 +29,17 @@ For how rooms use a self-hosted relay, see: [Room Relay](/en/connect/spaces/room
 
 - A server with a **public address** (a public IP, or a domain resolving to a public IP)
 - An open **UDP** port (`7000` in the examples below)
-- The relay program `msstnetRelay31x`
+- The relay program `msstnetRelay31x` (see [Downloading the Relay](#downloading-the-relay) below)
 
 > The relay address cannot be an internal address: private addresses, loopback addresses, link-local addresses, IPv6 unique local addresses and carrier-grade NAT addresses (`100.64.0.0/10`) are all rejected.
+
+---
+
+## Downloading the Relay
+
+The relay program can be downloaded from the following locations; pick the build for your server's platform:
+
+[Download the MSST-Net Relay](https://github.com/MSST-Net-Developers/msstnetRelay31x/releases)
 
 ---
 
