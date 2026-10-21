@@ -74,16 +74,30 @@ mc.abjust.msst.net     → CNAME → archlinux.abjust.ezplay.msst.net
 
 ## 在 MSST-Net 设备上的解析
 
-接入 MSST-Net 的设备上，`*.msst.net` 的查询全部由客户端核心的本机解析器处理（详见 [《MSST-Net ezPlay》](/connect/extras/ezplay#本机域名解析)）。目前本机解析器：
+接入 MSST-Net 的设备上，`*.msst.net` 的查询全部由客户端核心的本机解析器处理（详见 [《MSST-Net ezPlay》](/connect/extras/ezplay#本机域名解析)）：
 
-- 支持指向 ezPlay 主机名的 **CNAME** 记录：查询别名时，直接返回目标设备的虚拟 IPv4 / IPv6 地址（只跟随一层 CNAME）
-- 只返回 A / AAAA 结果，**TXT 与 SRV 记录暂时无法在客户端设备上查询到**
+| 查询类型 | 结果 |
+|---|---|
+| A / AAAA | 指向 ezPlay 主机名的 CNAME 会被直接展开为目标设备的虚拟 IP（只跟随一层） |
+| TXT / SRV | 返回命名空间中对应的记录；只有 CNAME 时返回该 CNAME，由系统解析器继续跟随 |
 
-因此，若希望好友通过自定义域名连接你的服务，推荐使用 CNAME 记录，并在连接时写明端口，例如：
+> 解析 TXT / SRV 记录需要较新版本的客户端核心；旧版本核心只返回 A / AAAA 结果。
 
-```text
-mc.abjust.msst.net:25565
-```
+### SRV 记录示例
+
+Minecraft Java 版会查询 `_minecraft._tcp.<域名>` 的 SRV 记录。添加如下记录后，好友输入 `abjust.msst.net` 即可连接，无需填写端口：
+
+| 字段 | 值 |
+|---|---|
+| 子域名 | `_minecraft._tcp` |
+| 类型 | SRV |
+| 优先级 / 权重 | `0` / `5` |
+| 端口 | `25565` |
+| 目标主机 | `archlinux.abjust.ezplay.msst.net` |
+
+::: warning 自行发起 DNS 查询的程序
+本机解析器通过系统的 DNS 分流规则接管 `*.msst.net`。部分程序（例如 Minecraft Java 版的 SRV 查询）会绕过系统解析接口、直接向系统的主 DNS 服务器查询，在 **Windows 和 macOS** 上可能因此查不到 SRV 记录。遇到这种情况，请改用 CNAME 记录并在地址中写明端口（如 `mc.abjust.msst.net:25565`）。Linux 与 Android 上不受影响。
+:::
 
 ---
 

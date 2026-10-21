@@ -1,1 +1,0 @@
-import{_ as e,c as t,o as c}from"./chunks/framework.W5ZyBR1w.js";const l=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"connect/acl/groups.md","filePath":"connect/acl/groups.md"}'),o={name:"connect/acl/groups.md"};function a(r,n,s,p,_,d){return c(),t("div")}const m=e(o,[["render",a]]);export{l as __pageData,m as default};
