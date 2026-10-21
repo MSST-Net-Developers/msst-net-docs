@@ -1,0 +1,26 @@
+@import './font.css';
+
+.VPHero .name.clip {
+  background: -webkit-linear-gradient(90deg, #1e3a8a 15%, #3b82f6 15%); /* 深蓝到亮蓝 */
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.VPDoc h1 {
+  background: -webkit-linear-gradient(90deg, deepskyblue 15%, dodgerblue 15%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 红色按钮 */
+.vp-button.danger {
+  background-color: #f33a3a;
+  color: white;
+}
+
+.vp-button.danger:hover {
+  background-color: #f56c6c;
+}
+

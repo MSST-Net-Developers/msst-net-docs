@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /home/abjust/RustroverProjects/msst-net-client-core -type f | sort 2>/dev/null | head -80)",
+      "Read(//home/abjust/RustroverProjects/msst-net-client-core/**)",
+      "Bash(find /home/abjust/RustroverProjects/msst-net-client-controller -type f | sort 2>/dev/null | head -80)",
+      "Read(//home/abjust/RustroverProjects/msst-net-client-controller/**)"
+    ]
+  }
+}

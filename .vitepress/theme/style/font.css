@@ -1,0 +1,28 @@
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMonoNerdFontMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: '汉仪正圆';
+  src: url('/fonts/HYZhengYuan-45S.woff2') format('woff2');
+  font-weight: 450;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: '汉仪正圆';
+  src: url('/fonts/HYZhengYuan-75S.woff2') format('woff2');
+  font-weight: 750;
+  font-style: bold;
+  font-display: swap;
+}
+
+:root {
+  --vp-font-family-base: '汉仪正圆', sans-serif; /* normal text font */
+  --vp-font-family-mono: 'JetBrains Mono', monospace; /* code font */
+}

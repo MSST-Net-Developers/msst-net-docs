@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as c}from"./chunks/framework.W5ZyBR1w.js";const i=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"connect/acl/rules.md","filePath":"connect/acl/rules.md"}'),a={name:"connect/acl/rules.md"};function r(n,o,s,l,p,_){return c(),t("div")}const m=e(a,[["render",r]]);export{i as __pageData,m as default};

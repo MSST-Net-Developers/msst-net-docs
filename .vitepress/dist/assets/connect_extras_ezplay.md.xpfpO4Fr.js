@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as a}from"./chunks/framework.W5ZyBR1w.js";const i=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"connect/extras/ezplay.md","filePath":"connect/extras/ezplay.md"}'),c={name:"connect/extras/ezplay.md"};function n(r,o,s,p,l,_){return a(),t("div")}const m=e(c,[["render",n]]);export{i as __pageData,m as default};
