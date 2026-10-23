@@ -115,8 +115,8 @@ space-7e3a9f12
 
 ### Origin
 
-- The **device ID** is derived from the first 4 bytes of the SHA-256 hash of the device's public key. The coordinator verifies that the device ID matches the public key, and binds the first registered public key to the device ID
-- The **user ID** is derived from the account for authenticated users, and from the device public key for unauthenticated users
+- The **device ID** is derived from the first 4 bytes of the SHA-256 hash of the device's public key. The coordinator verifies that the device ID matches the public key, requires the device to prove it holds the matching private key, and binds the first registered public key to the device ID. Clients check this again when they receive other devices' keys; a device whose key doesn't match its ID is ignored
+- The **user ID** is derived from the account for authenticated users, and from the device public key for unauthenticated users (also checked by the coordinator and by other clients)
 - The **room ID** is generated randomly when the room is created
 
 ### Properties

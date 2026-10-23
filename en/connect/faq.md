@@ -57,6 +57,14 @@ When upgrading, the device ID, virtual IP and firewall rules are kept automatica
 
 ---
 
+### Can 3.1.6 be used together with 3.1 clients up to 3.1.5?
+
+Yes; only **game discovery** doesn't work between them: 3.1.6 sends game discovery end to end inside the encrypted tunnel and doesn't fall back to the old way for compatibility. The room's member cards mark members with an older version. Upgrade the devices that need to find each other's games to 3.1.6.
+
+See: [Room Mode](/en/connect/spaces/room_space#game-discovery)
+
+---
+
 ## Connection Problems
 
 ### Why can't I connect to a peer device?
@@ -84,14 +92,17 @@ If the network environment (such as strict NAT or symmetric NAT) can't be traver
 
 After consecutive failed probes, the system gradually lengthens the probing interval (up to 10 minutes); the path view shows the number of failed rounds and when the next probe will happen.
 
-Also, if **Disable P2P direct connections** is turned on, no direct connection will be established.
+Also:
+
+- If either side turns on **Disable P2P direct connections**, no direct connection is established (an existing one drops back to relayed at once)
+- Direct probes are answered only for **known devices**: when two devices have just started talking and the other side doesn't know this device yet, the first probing round may fail; it is retried automatically
 
 ---
 
 ### What can I do about high latency?
 
 1. Check the current path mode: if it's Direct, high latency is probably a problem with the network itself
-2. If it's relay mode, pin a closer relay under **Settings → Diagnostics & Debugging → Advanced Options** (**Relay Preference**)
+2. If it's relay mode, pin a closer official relay under **Settings → Diagnostics & Debugging → Advanced Options** (**Relay Preference**)
 3. When room members are concentrated in one region, the room owner can specify a suitable **room relay** when creating the room
 4. Check your local network quality and look for ISP or Wi-Fi problems
 
@@ -136,6 +147,16 @@ To allow an unknown device, create a firewall rule manually first, or get into t
 ICMP ping (the `ping` command) is denied by default.
 
 To allow ping, ask the peer to turn on the **Ping (ICMP)** toggle on the controller's **Defense** page.
+
+---
+
+### After I delete a rule, do connections the other side already has continue?
+
+No. Deleting, disabling or clearing rules **cuts immediately** the connections those rules allowed; the other side's next packet is judged by the rules again.
+
+A rule that simply **expires** doesn't cut established connections, though: a game started after an "Allow" (10-minute) authorization can go on.
+
+See: [Firewall Rules](/en/connect/acl/rules#connection-tracking)
 
 ---
 
@@ -194,10 +215,19 @@ No. Since 3.1, no room has a member limit.
 ### The game's LAN multiplayer option can't find the room?
 
 1. Make sure both devices are in the same MSST-Net room
-2. LAN discovery is only supported on **desktop (Windows / Linux / macOS)**; Android is not supported
-3. Make sure the game uses a protocol supported by discovery (Minecraft Java LAN broadcast, mDNS, etc.)
-4. Under **Settings → Diagnostics & Debugging → Game Discovery**, check whether any discovery packets are being dropped
-5. Some games may require entering an IP or ezPlay hostname manually instead of automatic discovery
+2. Game discovery is only supported on **desktop (Windows / Linux / macOS)**; Android is not supported
+3. Make sure both use client 3.1.6 or newer: when a member card shows "version too old", there is no game discovery between the two
+4. Make sure the game uses a supported discovery method (Minecraft Java Edition multicast, mDNS, UDP broadcasts to MSST-Net's broadcast address, etc.)
+5. Under **Settings → Diagnostics & Debugging → Game Discovery**, check the sent, received and dropped counts
+6. Some games may require entering an IP or ezPlay hostname manually instead of automatic discovery
+
+---
+
+### The controller left the room on its own?
+
+The coordinator reclaims a room when no member has kept it alive for more than 2 minutes (for example, all members' devices went to sleep). When the device wakes up, the client learns that the room is gone, leaves it automatically, and the controller returns to the home page.
+
+To keep playing, create a new room.
 
 ---
 
@@ -205,7 +235,7 @@ No. Since 3.1, no room has a member limit.
 
 Yes. A device's virtual IP is a fixed address deterministically derived from its device ID; it has nothing to do with whether the device is in a room and is always valid.
 
-Leaving a room only stops LAN discovery and doesn't affect the virtual IP itself. However, unauthenticated users can no longer communicate with any device after leaving a room.
+Leaving a room stops game discovery and cuts the connections allowed only because of the room (those allowed by room-level rules, and those with guest devices), but doesn't affect the virtual IP itself. Unauthenticated users can no longer communicate with any device after leaving a room.
 
 ---
 
@@ -234,6 +264,16 @@ Yes. Copy `private.key` and `identity.json` from the data directory to the new d
 
 ### Can relays see my communications?
 
-No. All data between devices is end-to-end encrypted with WireGuard. Relays (including self-hosted relays) can only see device IDs, public addresses and traffic timing, plus the content of game discovery.
+No. All data between devices is end-to-end encrypted with WireGuard, and since 3.1.6 game discovery is too. Relays (including self-hosted relays) can only see device IDs, public addresses and traffic timing (clients up to 3.1.5 also let relays see game discovery content).
 
-See: [Connections](/en/connect/basics/connections#data-encryption)
+See: [Connections](/en/connect/basics/connections#data-encryption), [Security Model](/en/connect/basics/security)
+
+---
+
+### Why can't I set the relay preference to my own relay?
+
+**Relay Preference** supports official relays only. A self-hosted relay can only be specified as a **room relay** by the room owner when creating a room.
+
+Likewise, only official relays announced by peers are used: otherwise any device could make others send data to an arbitrary server, or learn their public addresses that way.
+
+See: [Connections](/en/connect/basics/connections#manual-selection), [Room Relay](/en/connect/spaces/room_relay)

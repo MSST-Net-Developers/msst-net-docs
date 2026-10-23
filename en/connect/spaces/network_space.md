@@ -76,7 +76,7 @@ Main differences between the two modes:
 | Authentication required | Yes | No |
 | Reachable peers | All authenticated devices on the network | Current room members only |
 | Access control | Firewall rules + interactive authorization | Firewall rules (including room-level rules) + interactive authorization |
-| Discovery | Not supported | Supported (multicast / broadcast proxy) |
+| Game discovery | Not supported | Supported (multicast / broadcast forwarded through the encrypted tunnel) |
 | Best for | Long-term, stable access | Ad-hoc networks, playing together |
 
 See:

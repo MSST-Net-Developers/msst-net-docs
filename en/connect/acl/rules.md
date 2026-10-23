@@ -53,6 +53,15 @@ This means:
 - Return traffic for connections you initiate doesn't need its own rule
 - Rules only control inbound connections **initiated by the peer**
 
+Once a rule lets an inbound connection in, this device's replies are tracked too, so later packets needn't be matched against the rules every time. The core remembers which rule allowed the connection, so **revoking a permission takes effect at once**:
+
+| Action | Established connections |
+|---|---|
+| Deleting, disabling or clearing rules | Cut immediately; the peer's next packet is judged by the rules again |
+| Leaving a room, or the other member leaving | Connections allowed only by a room-level rule (or by sharing the room) are cut immediately |
+| A rule expiring | **Not cut** (for example, a game started after an "Allow" authorization can go on) |
+| Another rule still allows it | Unaffected |
+
 ---
 
 ## Rule Priority
@@ -236,7 +245,7 @@ The current version only enforces **inbound** rules, that is, it controls traffi
 
 ## Expiry
 
-Rules can have an **expiry time**, after which they expire automatically and are removed from the list.
+Rules can have an **expiry time**, after which they expire automatically and are removed from the list. Connections established before the expiry are not cut by it; new connections need a new authorization.
 
 Without an expiry time, a rule is valid permanently.
 
@@ -250,12 +259,20 @@ ICMP echo requests (`ping`) aren't controlled by regular rules; instead, they're
 
 When it's on, devices on the network can ping this device's virtual IP.
 
+Other ICMP messages don't go through the rules either, but only the kinds a peer can legitimately send are accepted:
+
+- Echo replies when this device pings the peer
+- Error messages about **a packet this device sent to that device** (port unreachable, fragmentation needed, time exceeded, …)
+
+Redirects, router and neighbor discovery, timestamps and the like, and error messages about this device's other connections, are dropped. The same applies to ICMPv6.
+
 ---
 
 ## Rule Matching Flow
 
 When an inbound packet arrives, the system processes it in this order:
 
+0. A decrypted packet must come from the peer's own virtual IP and be addressed to this device's virtual IP, otherwise it is dropped (ICMP is handled as above)
 1. Check whether it's a return packet for a tracked connection → if so, allow it
 2. Check the unauthenticated restriction: if either side is unauthenticated and the two aren't in the same room → deny
 3. Walk all enabled, unexpired rules in priority order and find the first match

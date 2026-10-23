@@ -46,6 +46,7 @@ All MSST-Net 3.1 controllers share the same interface and come in three editions
 | Access password and IP allowlist | — | — | Required |
 | VPN service control | — | Yes | — |
 | Per-app proxy | — | Yes | — |
+| Linux-only network options (DNS mode, other-VPN switches) | Yes | Hidden (the built-in Android core doesn't use them) | Yes |
 
 ---
 
@@ -113,15 +114,17 @@ The desktop and WebUI editions connect to the client core over local IPC:
 
 You can specify a different path with the `MSST_IPC_PATH` environment variable.
 
-### Access Permissions (Linux / macOS)
+### Access Permissions
 
 The client core is a privileged process, so being able to open the IPC socket does not by itself let you operate the core. The core checks the system user on the other end of the connection and grants one of the following roles:
 
 | Role | Granted to | Permissions |
 |---|---|---|
-| Admin | The user running the core, root, the user who started the core via `sudo`, members of the local `msst-net` group | All operations |
+| Admin | The user running the core, root / LocalSystem, the user who started the core via `sudo`, members of the local `msst-net` group (`MSST-Net Administrators` on Windows), elevated programs (Windows) | All operations |
 | Viewer | Other users with a local login session | View status only |
 | — | Everyone else | Connection refused |
+
+The client installer creates these groups and adds the installing user.
 
 When the core runs as a system service under root, add your everyday account to the `msst-net` group to get admin permissions:
 

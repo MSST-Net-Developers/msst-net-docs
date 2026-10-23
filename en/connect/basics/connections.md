@@ -37,7 +37,9 @@ Each device generates a unique Curve25519 key pair on first start (stored in `pr
 - The device's identity key: the device ID is derived from the public key
 - The device's WireGuard static key
 
-The public key is submitted to the coordinator at device registration and bound to the device ID; afterwards, no other key can be used to impersonate the same device ID.
+The public key is submitted to the coordinator at device registration and bound to the device ID; the device must prove it holds the private key when registering, and afterwards no other key can be used to impersonate the same device ID.
+
+When the client receives another device's public key from the coordinator, it checks again that the key matches the device ID. Even a faulty coordinator cannot give a known device a different key.
 
 ### Encrypted Sessions
 
@@ -53,11 +55,20 @@ An encrypted session with a peer is **established on demand**: the handshake sta
 
 Sessions are reclaimed after being idle for a while and re-handshake automatically the next time you communicate — no action needed.
 
+If a peer's first handshake arrives before this device has its public key (for example, when the two haven't talked for a long time), the core holds the handshake, fetches the key from the coordinator and answers right away, instead of waiting for the peer's retransmission 5 seconds later.
+
+Devices you are talking to stay in this device's device list; only devices with no communication for 2 hours or more, not in a shared room and not referenced by any rule are dropped, and fetched again when needed.
+
 Encrypted sessions are independent of the connection path: switching from relayed to direct (or vice versa) does **not** interrupt the encrypted session.
 
-### Source Binding
+### Address Binding
 
-Decrypted packets must carry the peer's own virtual IP as the source address, otherwise they are dropped. This means any firewall decision based on the source device is backed by the peer's key.
+A decrypted packet must carry **the peer's own virtual IP as its source** and **this device's virtual IP as its destination**, otherwise it is dropped:
+
+- Source binding means any firewall decision based on the source device is backed by the peer's key
+- Destination binding means a peer cannot use this device to reach the other networks it is connected to (such as its LAN) — even with IP forwarding enabled
+
+The peer's virtual addresses are checked too: they must be inside MSST-Net's address ranges and must not duplicate this device's or another device's.
 
 ---
 
@@ -76,7 +87,11 @@ If a relay supports both IPv4 and IPv6, IPv4 is preferred as long as its latency
 
 ### Manual Selection
 
-You can pin a specific relay in the controller under **Settings → Diagnostics & Debugging → Advanced Options → Relay Preference**. If the pinned relay doesn't respond, another relay is still chosen automatically. This setting takes effect after reconnecting to the coordinator.
+You can pin a specific relay in the controller under **Settings → Diagnostics & Debugging → Advanced Options → Relay Preference**. This setting takes effect after reconnecting to the coordinator.
+
+- Only **official relays** (those in the coordinator's relay list) can be pinned; any other address is refused
+- An official relay pinned by IP address is used under its listed name, so other devices recognize it
+- If the pinned relay doesn't respond, another relay is still chosen automatically
 
 ### Relay Registration and Keepalive
 
@@ -105,7 +120,9 @@ There are three path modes:
 
 **Relay mode** is the initial state of every connection.
 
-In this mode, packets are sent to **the peer's preferred relay** (or to this device's preferred relay if the peer hasn't reported one), which forwards them to the peer, unaffected by NAT or firewalls.
+In this mode, packets are sent to **the peer's preferred relay**, which forwards them to the peer, unaffected by NAT or firewalls. When both devices are in the same room and use its room relay, packets go to the room relay instead.
+
+A relay reported by the peer is used only if it is in the **official relay list**; if the peer reports none, or one that isn't official, packets go to this device's preferred relay. This way other devices can't make this device send data to, or periodically probe, an arbitrary server — and with "Disable P2P direct connections" on, your public address isn't revealed to a server a peer picked.
 
 Relay mode is the most reliable way to connect, but has higher latency than a direct connection.
 
@@ -177,8 +194,10 @@ You can manually intervene in path selection in the controller under **Settings 
 
 | Option | Effect |
 |---|---|
-| Disable P2P direct connections | Always forward traffic through relays, and don't report direct-connection candidate addresses to peers |
+| Disable P2P direct connections | Always forward traffic through relays: existing direct paths drop back to relayed at once; no direct-connection candidate addresses are reported to peers, and peers' direct probes go unanswered, so their side of a direct path drops back too |
 | Lock current paths | Freeze the current path to every peer; no more switching between relayed and direct |
+
+With both on, "Disable P2P direct connections" wins: direct paths still drop back to relayed.
 
 ---
 
@@ -193,7 +212,11 @@ A device's endpoint information is detected and reported automatically by the cl
 - This device's public IPv6 address
 - This device's preferred relay (and any room relay in use)
 
-Endpoints are re-detected after a relay is chosen, every 5 minutes, and whenever a room relay's availability changes. You can also trigger it manually by clicking **Force Refresh Endpoints** under **NAT Traversal** in the controller.
+Endpoints are re-detected after a relay is chosen, every 5 minutes, when "Disable P2P direct connections" is toggled, and whenever a room relay's availability changes. You can also trigger it manually by clicking **Force Refresh Endpoints** under **NAT Traversal** in the controller.
+
+The endpoint list also carries a capability marker, `feature:wgdisc1` (game discovery through the encrypted tunnel). It is not an address, and older clients ignore it.
+
+Candidate addresses reported by peers are filtered: loopback, unspecified, multicast, broadcast and link-local addresses are ignored, and at most 16 candidates are used per device. Direct probes are answered only for **known devices**: probes from unknown sources get no reply, so someone scanning ports can't learn this device's ID.
 
 ---
 

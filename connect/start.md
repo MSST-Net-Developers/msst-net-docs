@@ -120,3 +120,4 @@ description: "本章主要讲述首次接入 MSST-Net 的基本流程。"
 - [《交互式授权》](/connect/acl/interactive_auth)
 - [《连接机制》](/connect/basics/connections)
 - [《房间中转》](/connect/spaces/room_relay)
+- [《安全模型》](/connect/basics/security)

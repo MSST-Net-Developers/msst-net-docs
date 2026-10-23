@@ -31,7 +31,7 @@ For how rooms use a self-hosted relay, see: [Room Relay](/en/connect/spaces/room
 - An open **UDP** port (`7000` in the examples below)
 - The relay program `msstnetRelay31x` (see [Downloading the Relay](#downloading-the-relay) below)
 
-> The relay address cannot be an internal address: private addresses, loopback addresses, link-local addresses, IPv6 unique local addresses and carrier-grade NAT addresses (`100.64.0.0/10`) are all rejected.
+> The relay address cannot be an internal address: private addresses, loopback addresses, link-local addresses, IPv6 unique local addresses and carrier-grade NAT addresses (`100.64.0.0/10`) are all rejected. Clients likewise refuse a room relay that resolves to such an address.
 
 ---
 
@@ -59,11 +59,11 @@ node:
 relay:
   bind: "[::]:7000"
   mode: self_hosted
-  register_auth: required           # Must be required in self-hosted mode
+  register_auth: required           # Must be required in self-hosted mode (also the default)
   password: ""                      # Optional: relay access password
   require_room_password: true       # On by default: only serve rooms that have a room password
 discovery:
-  auth_key_file: relay_discovery.key
+  auth_key_file: relay_discovery.key  # The relay's private key, also used for authenticated registration
 control:
   server_url: https://coord.msst-net.msst2031.cn   # Coordinator address; must be https
   # relay_secret must not be set in self-hosted mode
@@ -138,8 +138,9 @@ The relay's runtime status is output periodically as stats logs (one line every 
 ## Forwarding Rules for Self-Hosted Relays
 
 - Only data from members who **have completed authenticated registration with this relay** is forwarded, so outsiders can't use it as an open relay
-- Game discovery distribution is only provided for rooms that specified this relay
+- Only authenticated registration is accepted: nobody without a device's private key can register its device ID
 - Anyone can ping it (rate-limited); clients check whether the relay is reachable before using it
+- Since 3.1.6, clients' game discovery travels inside the encrypted tunnel and is forwarded like any data; the relay still provides the old game discovery distribution for clients up to 3.1.5, only for rooms that specified it
 
 ---
 
@@ -149,12 +150,13 @@ The operator of a self-hosted relay **can see**:
 
 - Room members' device IDs and public addresses
 - Traffic volume and timing
-- The content of game discovery data (such as a Minecraft server's MOTD)
+- Only for clients up to 3.1.5: the content of game discovery data (such as a Minecraft server's MOTD)
 
 They **cannot**:
 
-- Read or tamper with communications encrypted with WireGuard
-- Send data while impersonating a room member
+- Read or tamper with communications encrypted with WireGuard (including game discovery since 3.1.6)
+- Send data while impersonating a room member, or send game discovery as a member to 3.1.6 clients
+- Make members send traffic to internal addresses (clients only accept room relays at public addresses)
 
 A malicious relay can at most drop or delay packets. In that case, members' clients determine that the room relay is unavailable and automatically fall back to their own preferred relays, so the room keeps working.
 
@@ -168,8 +170,8 @@ The main default limits (all adjustable in `config.yaml`):
 |---|---|---|
 | `relay.max_sessions` | 65536 | Maximum number of devices registered at once |
 | `relay.session_ttl` | 120s | How long a device registration lasts without keepalives |
-| `discovery.sender_rate` | 10/s | Game discovery send rate per device |
-| `discovery.max_fanout` | 256 | Maximum number of members each discovery packet is delivered to |
+| `discovery.sender_rate` | 10/s | Game discovery send rate per device (old clients' game discovery only) |
+| `discovery.max_fanout` | 256 | Maximum number of members each discovery packet is delivered to (same) |
 | `log.stats_interval` | 60s | Stats log interval; 0 disables it |
 
 ---

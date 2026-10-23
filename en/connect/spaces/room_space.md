@@ -96,7 +96,9 @@ Room members can:
 
 - Communicate directly via virtual IPs
 - Reach each other via ezPlay hostnames (use **Copy Hostname** on a member card)
-- Use LAN discovery (see below)
+- Use game discovery (see below)
+
+When a member runs client 3.1.5 or older, its member card shows **This member's version is too old for game discovery** (everything else is unaffected).
 
 Right-click a member card (long-press on mobile) to:
 
@@ -105,25 +107,38 @@ Right-click a member card (long-press on mobile) to:
 
 ---
 
-## LAN Discovery
+## Game Discovery
 
-Room Mode provides a **LAN discovery proxy** that makes the room behave like a local network.
+Room Mode forwards games' **LAN discovery broadcasts** to the other room members, so the room behaves like a local network: a game's "LAN" option finds game servers running on other devices in the room without typing an IP.
 
-Supported discovery protocols:
+Discovery data forwarded:
 
-| Protocol | Purpose |
-|---|---|
-| Minecraft Java LAN (multicast `224.0.2.60`) | Minecraft multiplayer lobby search |
-| mDNS (multicast `224.0.0.251`) | LAN service discovery |
-| IPv4 broadcast (`x.x.x.255`) | Generic broadcast discovery |
+| Type | Destination | Port | Typical use |
+|---|---|---|---|
+| Minecraft Java Edition LAN worlds | Multicast `224.0.2.60` | 4445 | Minecraft LAN lobby search |
+| mDNS | Multicast `224.0.0.251` | 5353 | LAN service discovery |
+| IPv4 broadcast | `172.22.255.255` or `255.255.255.255` | Any | Minecraft Bedrock Edition, Rusted Warfare and other games that discover by broadcast |
 
-A game's "LAN multiplayer" option can automatically find game servers running on other devices in the room, without entering an IP manually.
+On desktop, broadcasts this device sends on its physical LAN are captured too, rewritten into MSST-Net's broadcast and forwarded. Only UDP packets are forwarded.
 
-Discovery data is distributed through relays and authenticated: only members of this room can send it, and clients only accept discovery data whose sender has been verified by the relay. Members using different relays can still discover each other.
+### How It Travels
 
-> **Note**:
-> - LAN discovery is only supported on **desktop (Windows / Linux / macOS)**; it is not supported on mobile (Android).
+Since 3.1.6, each discovery packet is sent **inside the WireGuard tunnel to each room member separately**, over that member's current path (direct or relayed):
+
+- The sender is authenticated end to end by the encrypted session; relays see only ciphertext and cannot impersonate room members
+- The receiver accepts discovery data only from **members of this room**, and rebuilds the packet with the sender's own virtual address, so the source can't be forged
+- At most 10 packets per second per sender and 100 per second from all senders together; discovery this device sends is likewise limited to 10 per second and de-duplicated within 3 seconds
+
+### Version Compatibility
+
+- There is **no game discovery** between 3.1.6 and devices running 3.1.5 or older. Up to 3.1.5 game discovery was distributed by relays, which could impersonate room members; 3.1.6 does not fall back to that for compatibility
+- Incompatible members are marked on their member cards, and this device sends them no discovery data
+- Whether a device supports the new way is read from the capability marker `feature:wgdisc1` in the endpoint list it reports
+
+> **Notes**:
+> - Game discovery is only supported on **desktop (Windows / Linux / macOS)**; it is not supported on mobile (Android).
 > - Being able to discover a service doesn't mean you're allowed to access it; access is still subject to firewall rules.
+> - Discovery data reaches every UDP program on this device that receives broadcasts — that is how broadcast discovery works; it only comes from members of the same room and is rate-limited as above.
 
 ---
 
@@ -147,15 +162,21 @@ See:
 
 When you're done playing, click **Leave Room** in the controller.
 
-After leaving, the device returns to plain Network Mode (unauthenticated users are no longer connected to any device), and LAN discovery stops.
+After leaving:
+
+- The device returns to plain Network Mode (unauthenticated users are no longer connected to any device), and game discovery stops
+- Connections allowed by **room-level rules**, and connections with guest devices that existed only because you shared the room, are **cut immediately**; further access is judged by Network Mode rules
+
+When another member leaves the room, connections from that member that were allowed only because of the room are cut the same way.
 
 ---
 
 ## Room Lifecycle
 
 - A room is automatically dissolved about 1 minute after **all members have left**
-- Members' clients periodically send room keepalives to the coordinator; a room with no keepalive for more than 2 minutes is also dissolved
+- Members' clients send a room keepalive to the coordinator every minute; a room with no keepalive for more than 2 minutes (for example, all members' devices went to sleep) is also dissolved
 - Once a room is dissolved, its room number becomes invalid and can no longer be joined
+- When a device wakes up, its client learns that the room is gone at its next keepalive or coordinator reconnect, **leaves the room automatically**, and the controller returns to the home page
 
 ---
 

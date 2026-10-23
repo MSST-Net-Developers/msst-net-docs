@@ -39,7 +39,7 @@ It is responsible for:
 - Choosing the connection path (direct or relayed)
 - Enforcing firewall rules and interactive authorization
 - Resolving `*.msst.net` domains locally
-- Forwarding games' LAN discovery broadcasts within a room
+- Forwarding games' LAN discovery broadcasts end to end between room members
 
 The core keeps running even when the controller is closed, so network connectivity is unaffected.
 
@@ -47,10 +47,11 @@ Local ports used by the core:
 
 | Port | Purpose |
 |---|---|
-| UDP 21031 | Data channel (direct and relayed) |
-| UDP 21032 | Game discovery |
+| UDP 21031 | Data channel (direct and relayed); game discovery uses it too |
 | UDP 127.0.0.1:21053 (127.0.0.1:53 on Windows) | Local DNS resolution |
-| TCP 9100 | Prometheus metrics |
+| TCP 127.0.0.1:9100 | Prometheus metrics (local only) |
+
+> Up to 3.1.5, game discovery also used UDP 21032. Since 3.1.6 it travels inside the encrypted tunnel and that port is no longer used.
 
 ---
 
@@ -58,10 +59,22 @@ Local ports used by the core:
 
 The controller is an **unprivileged** graphical program that talks to the core over local IPC:
 
-- Linux / macOS: Unix domain socket
+- Linux: Unix domain socket `/run/msst-net/ipc.sock` (`/var/run/msst-net/ipc.sock` on macOS)
 - Windows: named pipe `\\.\pipe\msst-net-ipc`
+- Android: the core is embedded in the app and talks over an app-private socket
 
 The controller only displays the state reported by the core and passes the user's actions on to the core; it **never modifies any network state directly**.
+
+### Access rights
+
+Being able to open the socket does not mean being able to operate the core. The core decides each connection's rights from its operating-system identity (provided by the OS, it cannot be forged):
+
+| Role | Allowed | Who |
+|---|---|---|
+| Administrator | Query state and perform every operation (rooms, rules, settings, …) | root / LocalSystem, the core's own user, the user who started the core with `sudo`, members of the local group **`msst-net`** (Linux / macOS) or **`MSST-Net Administrators`** (Windows), and elevated programs (Windows) |
+| Read-only | Query state and receive events; no changes | Other users logged in to the machine |
+
+A read-only connection shows a read-only interface in the controller. The installer creates these groups and adds the installing user; after joining a group, reconnecting is enough — the core doesn't need a restart.
 
 When the controller is reopened or reconnects, it first reads the full state from the core and then receives subsequent change notifications, so it never shows stale information just because it was closed for a while.
 
@@ -78,8 +91,11 @@ The coordinator is MSST-Net's control plane. It is responsible for:
 - Assigning ezPlay hostnames and providing `*.msst.net` resolution data
 - Creating and joining rooms, syncing members and verifying room passwords
 - Integrating with the MSST-IAS (OIDC device authorization flow) and issuing guest credentials
-- Registering relays and announcing available official relays to clients
+- Registering relays and announcing available official relays (and their public keys) to clients
 - Managing custom `.msst.net` namespaces
+- Verifying that a registering device holds its key (**key proof**) and pinning each device ID's public key
+
+Device keys, users, rooms and other data are kept in a local SQLite database by default, so they survive restarts.
 
 The client core keeps a persistent WebSocket connection to the coordinator and uses HTTPS APIs for operations such as registration and room creation.
 
@@ -97,9 +113,9 @@ https://coord.msst-net.msst2031.cn
 
 A relay does exactly one thing: it **forwards already-encrypted packets unchanged** between devices.
 
-- The relay cannot see the content of communications (data is end-to-end encrypted with WireGuard)
+- The relay cannot see the content of communications (data is end-to-end encrypted with WireGuard); game discovery travels inside the encrypted tunnel as well
 - The relay can see device IDs, public addresses, traffic volume and timing
-- Game discovery data is also distributed through the relay, which delivers it only to verified members of the same room
+- Devices sign their registration with their private key (**authenticated registration**), so nobody else can claim a device ID and divert its traffic
 
 There are two kinds of relays:
 
@@ -116,8 +132,23 @@ See:
 
 ---
 
+## Trust boundaries
+
+| Component | Trusted to | Not trusted to |
+|---|---|---|
+| Coordinator | Distribute device public keys, the official relay list and room membership | See or forward user data |
+| Official / room relay | Forward packets | Confidentiality, integrity or sender identity (all guaranteed end to end) |
+| Other devices | — | Anything: their data is checked cryptographically, by address and by the firewall |
+
+The client checks what the coordinator hands out: a peer's public key must match its device ID, its virtual addresses must be inside MSST-Net's ranges, and the relay it announces must be an official one.
+
+See: [Security Model](/en/connect/basics/security)
+
+---
+
 ## Related
 
 - [Authentication](/en/connect/basics/authentication)
 - [Connections](/en/connect/basics/connections)
+- [Security Model](/en/connect/basics/security)
 - [Controller](/en/connect/install/controller)

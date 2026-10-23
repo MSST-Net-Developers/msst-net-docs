@@ -68,10 +68,16 @@ The relay access password authorizes "this room may use this relay", so only the
 |---|---|
 | Invalid relay | The connection string is malformed, or the public key is wrong |
 | Relay offline | The relay isn't currently registered with the coordinator |
-| Relay version not supported | The relay doesn't support authenticated registration and secure game discovery, so it can't be used as a room relay |
+| Relay version not supported | The relay doesn't support the required protocol feature (authenticated registration), so it can't be used as a room relay |
 | Relay password required / Wrong relay password | The relay has an access password set |
 | Room password required | The relay requires rooms that use it to have a room password |
 | Already in a room | A device can only be in one room at a time; leave the current room first |
+
+### Address Requirement
+
+A room relay must be at a **public unicast address**. Clients refuse a room relay that resolves to a loopback, private (`10.0.0.0/8`, `192.168.0.0/16`, …), CGNAT (`100.64.0.0/10`), link-local or IPv6 unique-local address; members then use their own preferred relays.
+
+This keeps a room's creator from using the room relay to make every member send traffic into their own LAN or to their own host.
 
 ---
 
@@ -79,7 +85,7 @@ The relay access password authorizes "this room may use this relay", so only the
 
 In rooms that use a self-hosted relay, every member sees a "This room uses a self-hosted relay" notice along with the relay address in the room UI. Members can't opt out of the room relay, but they can choose not to join the room.
 
-A self-hosted relay can see members' device IDs, public addresses, traffic timing, and game discovery content (such as a Minecraft server's MOTD); it **cannot see or forge** communications encrypted with WireGuard.
+A self-hosted relay can see members' device IDs, public addresses and traffic timing; it **cannot see or forge** communications encrypted with WireGuard. Since 3.1.6 game discovery travels inside the encrypted tunnel as well, so a self-hosted relay can neither see discovery content (such as a Minecraft server's MOTD) nor send discovery as a room member.
 
 ---
 
@@ -104,7 +110,7 @@ Data sent to room members picks a path in this order:
 
 1. A direct connection with the peer exists: send directly
 2. Both the peer and this device can use the room relay: send via the room relay
-3. Otherwise: send to the peer's preferred relay
+3. Otherwise: send to the peer's preferred relay (or to this device's preferred relay if the peer's isn't an official one)
 
 Traffic to non-members is unaffected by the room relay. After leaving the room, the client stops using the room relay.
 
@@ -112,7 +118,9 @@ Traffic to non-members is unaffected by the room relay. After leaving the room, 
 
 ## Game Discovery
 
-When a room relay is specified, game discovery data is also distributed through the room relay first; for members who have fallen back, the client additionally sends discovery data to their preferred relay, so all members can still discover each other.
+Since 3.1.6, game discovery data is no longer distributed by relays: it is sent to each member separately inside the encrypted tunnel, along the path selection above (possibly through the room relay). So game discovery keeps working while the room relay is in fallback.
+
+See: [Room Mode](/en/connect/spaces/room_space#game-discovery)
 
 ---
 

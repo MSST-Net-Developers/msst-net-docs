@@ -62,7 +62,7 @@ Each access log entry offers quick actions that create a device-level rule for t
 |---|---|
 | Denied or silently denied | **Allow Once** (expires after 10 minutes), **Always Allow**, **Always Deny** |
 | Allowed, but not by a permanent allow rule | **Always Allow** |
-| Allowed by a permanent allow rule | **Revoke** (deletes that rule) |
+| Allowed by a permanent allow rule | **Revoke** (deletes that rule and immediately cuts the established connections it allowed) |
 
 Rules can't be created manually on mobile, so the access log is one of the main ways to add rules there.
 

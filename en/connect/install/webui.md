@@ -44,7 +44,7 @@ The WebUI generates a new self-signed certificate on every start, so the browser
 
 ## Configuration Files
 
-WebUI configuration is stored in `~/.config/msst-net-webui/`:
+WebUI configuration is stored in `~/.config/msst-net-webui/` (`%APPDATA%\msst-net-webui\` on Windows; set `MSST_WEBUI_CONFIG_DIR` to use another directory, e.g. a volume in a container):
 
 | File | Description |
 |---|---|
@@ -67,11 +67,14 @@ allowed_cidrs = [
 
 > If `config.toml` exists but cannot be parsed, the WebUI refuses to start instead of falling back to the defaults, so the allowlist is never loosened by accident.
 
+> MSST-Net's own virtual networks (`172.22.0.0/16`, `fd22:2222:2222:2222::/64`) are **not allowed** to reach the WebUI by default, even though the default allowlist's `172.16.0.0/12` and `fc00::/7` cover them. To allow other devices in MSST-Net, add an entry inside the virtual network explicitly (for example one device's `172.22.x.y/32`).
+
 ### Environment Variables
 
 | Variable | Description |
 |---|---|
 | `WEBUI_BIND` | Override the listening address (default `0.0.0.0:<port>`) |
+| `MSST_WEBUI_CONFIG_DIR` | Configuration directory |
 | `MSST_IPC_PATH` | Specify the client core's IPC socket path |
 | `PASSWORD_FILE` / `ADMIN_PASSWORD` | Source of the access password on first start |
 
@@ -79,7 +82,7 @@ allowed_cidrs = [
 
 ## Security
 
-- **Access password**: every page and API requires logging in first; failed logins are answered with a delay to slow down brute-force attempts
+- **Access password**: every page and API requires logging in first; failed logins are answered with a delay to slow down brute-force attempts. A login session lasts 24 hours; after the WebUI restarts you log in again
 - **IP allowlist**: every request is checked to make sure its source address is within `allowed_cidrs`
 - **HTTPS**: all traffic is encrypted
 - Cross-site WebSocket connections are rejected

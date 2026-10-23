@@ -153,6 +153,12 @@ If all of the above pass, the client is installed successfully.
 - The core automatically reuses the 3.0.x data directory, so device ID, user ID, virtual IP and firewall rules stay the same
 - See [Client Configuration](/en/connect/install/configuration#upgrading-from-3-0-x)
 
+## Upgrading to 3.1.6
+
+- Game discovery is now sent to each room member through the encrypted tunnel, no longer distributed by relays, and UDP 21032 is no longer used
+- There is **no game discovery** between 3.1.6 and devices running 3.1.5 or older (everything else still works); the room's member list marks members with an older version. Upgrade the devices that play together
+- See [Room Mode](/en/connect/spaces/room_space#game-discovery)
+
 ---
 
 ## Next Steps

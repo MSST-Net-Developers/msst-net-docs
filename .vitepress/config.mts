@@ -7,6 +7,7 @@ function sidebarZh(): DefaultTheme.SidebarItem[] {
       text: '接入 MSST-Net',
       items: [
         { text: '新手教程（？）', link: '/connect/start.md' },
+        { text: '版本更新说明', link: '/connect/changelog.md' },
         { text: '安装部署', items: [
           { text: '安装客户端', link: '/connect/install/client.md' },
           { text: '配置系统服务', link: '/connect/install/service.md' },
@@ -19,6 +20,7 @@ function sidebarZh(): DefaultTheme.SidebarItem[] {
           { text: '接入认证', link: '/connect/basics/authentication.md' },
           { text: '标识符', link: '/connect/basics/identifiers.md' },
           { text: '连接机制', link: '/connect/basics/connections.md' },
+          { text: '安全模型', link: '/connect/basics/security.md' },
         ]},
         { text: '接入模式', items: [
           { text: '大内网模式', link: '/connect/spaces/network_space.md' },
@@ -53,7 +55,8 @@ function sidebarEn(): DefaultTheme.SidebarItem[] {
     {
       text: 'Connecting to MSST-Net',
       items: [
-        { text: 'Getting Started (?)', link: '/en/connect/start.md' },
+        { text: 'Getting Started', link: '/en/connect/start.md' },
+        { text: 'Release Notes', link: '/en/connect/changelog.md' },
         { text: 'Installation', items: [
           { text: 'Installing the Client', link: '/en/connect/install/client.md' },
           { text: 'System Service', link: '/en/connect/install/service.md' },
@@ -66,6 +69,7 @@ function sidebarEn(): DefaultTheme.SidebarItem[] {
           { text: 'Authentication', link: '/en/connect/basics/authentication.md' },
           { text: 'Identifiers', link: '/en/connect/basics/identifiers.md' },
           { text: 'Connections', link: '/en/connect/basics/connections.md' },
+          { text: 'Security Model', link: '/en/connect/basics/security.md' },
         ]},
         { text: 'Access Modes', items: [
           { text: 'Network Mode', link: '/en/connect/spaces/network_space.md' },
@@ -96,32 +100,6 @@ function sidebarEn(): DefaultTheme.SidebarItem[] {
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  transformHead({ assets }) {
-    // 需要匹配的字体正则
-    const fontPatterns = [
-      /HYZhengYuan-55W\.\w+\.woff2/
-    ]
-
-    // 查找匹配的字体文件
-    const preloadLinks = fontPatterns
-      .map(pattern => {
-        const foundFont = assets.find(file => pattern.test(file))
-        return foundFont
-          ? [
-              'link',
-              {
-                rel: 'preload',
-                href: foundFont,
-                as: 'font',
-                type: 'font/woff2',
-                crossorigin: ''
-              }
-            ]
-          : null
-      })
-      .filter(Boolean) // 过滤掉 null 值
-    return preloadLinks
-  },
   metaChunk: true,
   cleanUrls: true,
   title: "MSST-Net",

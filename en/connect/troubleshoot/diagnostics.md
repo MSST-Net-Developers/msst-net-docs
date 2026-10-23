@@ -63,9 +63,9 @@ Click **View Logs** to see the client core's recent logs:
 
 | Option | Description |
 |---|---|
-| Disable P2P direct connections | Always forward traffic through relays |
+| Disable P2P direct connections | Always forward traffic through relays; existing direct paths drop back to relayed at once |
 | Lock current paths | Prevent any path switching |
-| Relay preference | Pick the best automatically, or pin an official relay |
+| Relay preference | Pick the best automatically, or pin an official relay (official relays only) |
 
 ### Relay Registration
 
@@ -78,17 +78,24 @@ It also shows the number of registration packets sent and when the **relay path 
 
 If the current room specifies a room relay, the room relay's resolved address and registration count are shown as well.
 
-### Game Discovery
+### Game Discovery (End to End over WireGuard)
 
-Shows game discovery statistics: the number of discovery packets received, the number dropped for each reason, and the list of relays discovery data is sent to.
+Shows game discovery statistics:
+
+| Item | Meaning |
+|---|---|
+| Sent | Discovery messages sent to room members (each broadcast × each member) |
+| Received | Discovery packets injected into this device |
+| Not sent (member's version too old) | Broadcasts not sent to a member because it runs client 3.1.5 or older |
+| Dropped | Counted per reason, see below |
 
 | Drop reason | Meaning |
 |---|---|
-| Sender not verified | The relay didn't verify the sender's identity, so the client rejected it |
-| Duplicate via another relay | The same discovery packet arrived via multiple relays; it is injected only once |
-| Replay | An expired or duplicate discovery packet |
+| Sender not a room member | The sender isn't in the room this device is in |
+| Not a game discovery broadcast | The content doesn't follow the game discovery rules (only UDP broadcasts and the two discovery multicast groups) |
+| Over the rate limit | One sender exceeded 10 per second, or all senders together exceeded 100 per second |
 
-If it shows "The current relay doesn't provide a public key", that relay doesn't support secure game discovery, and game discovery can't work through it.
+> With a core of 3.1.5 or older, the controller doesn't show this section.
 
 ### Path View (Read-Only)
 
@@ -104,6 +111,10 @@ Lists the current path and encryption state for each peer:
 |---|---|
 | MTU | 1280–1500, automatic (1280) by default; takes effect after restarting the core |
 | DNS configuration mode (Linux only) | Prefer split DNS, or DNS interception only |
+| Bypass other VPNs' full tunnels (Linux only) | On by default, see [Client Configuration](/en/connect/install/configuration#network-settings) |
+| Block other VPNs over MSST-Net (Linux only) | On by default, see [Client Configuration](/en/connect/install/configuration#network-settings) |
+
+Linux-only options are not shown in the mobile controller.
 
 ### Traffic Counters
 
@@ -122,12 +133,21 @@ Shows data sent, received and dropped per peer. Reset automatically when the pat
 
 ### Ping Peer
 
-Sends 10 probes (200 ms apart, 2-second timeout) to the first **direct-connection candidate address** reported by the specified device, and reports the number sent, received and lost, plus the average round-trip time. You can **Select from Peer List** or enter the target device ID directly.
+Sends 10 probes (200 ms apart, 2-second timeout) to the specified device, and reports the number sent, received and lost, plus the average round-trip time. You can **Select from Peer List** or enter the target device ID directly.
 
-This tool checks **whether a direct connection to the peer is possible**; it doesn't go through a relay and isn't affected by the peer's Ping (ICMP) toggle:
+Since 3.1.5 the probes take **the path actually used** to talk to that device, named in the result's **Path** line:
 
-- All timed out: the peer hasn't reported a direct address, or the two sides can't communicate directly (they can still communicate via relay)
-- Responses received: the direct address is reachable; compare with the path view to see why it hasn't been upgraded to direct yet
+| Path | How it probes |
+|---|---|
+| P2P direct | Direct probe packets to the direct address in use |
+| Relayed (inside the WireGuard tunnel) | Probe packets inside the encrypted tunnel via the relays, answered by the peer's core; without an encrypted session a handshake comes first, so the first result may include it |
+
+The peer's client core answers the probes itself, so the peer's Ping (ICMP) toggle doesn't matter:
+
+- All timed out: the path to the peer isn't working (compare with the encryption state in the path view)
+- Higher latency through a relay is normal; to find out why there is no direct path, check the direct probing state in the path view
+
+> Cores up to 3.1.4 always probed the peer's first direct candidate, which timed out for every relayed peer; with such a core the controller doesn't show the Path line.
 
 ---
 
@@ -136,7 +156,7 @@ This tool checks **whether a direct connection to the peer is possible**; it doe
 When you can't reach a peer's service, we recommend checking in this order:
 
 1. **Local status**: are all three connection statuses normal?
-2. **Is the peer reachable**: check whether the peer's encryption state in the path view is "Encrypted"; if you need to investigate direct connectivity, test with **Ping Peer**
+2. **Is the peer reachable**: check whether the peer's encryption state in the path view is "Encrypted", or test the current path with **Ping Peer**
 3. **Peer firewall**: ask the peer to check under **Defense → Access Log** whether your access was denied, and why
 4. **The service itself**: confirm the peer's service is listening, and not only on `127.0.0.1`
 

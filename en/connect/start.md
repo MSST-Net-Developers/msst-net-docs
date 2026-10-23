@@ -120,3 +120,4 @@ After your first connection, we recommend reading:
 - [Interactive Authorization](/en/connect/acl/interactive_auth)
 - [Connections](/en/connect/basics/connections)
 - [Room Relay](/en/connect/spaces/room_relay)
+- [Security Model](/en/connect/basics/security)

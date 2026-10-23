@@ -72,6 +72,8 @@ In the controller, the user can make one of four decisions:
 
 Authorization decisions always create **device-level** rules that apply only to that source device and that protocol and port. Permanent rules can be managed on the **Defense** page.
 
+After **Allow**, connections established within the 10 minutes **can go on** after the rule expires (a game already in progress isn't interrupted); new connections after the expiry need a new authorization. To cut them right away, delete or disable the rule on the **Defense** page.
+
 ---
 
 ## Data While Waiting

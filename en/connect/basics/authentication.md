@@ -41,6 +41,14 @@ After authentication, the controller shows the **authenticated user** and the cr
 - Access tokens are never sent to the controller or written to logs
 - The core refreshes credentials automatically before they expire
 
+### Device Key Proof
+
+Whether or not you are authenticated, every time the device registers with the coordinator it proves that it holds the device's private key (key proof): the coordinator issues a one-time challenge and the core answers it with the device key.
+
+- The device ID is derived from the device's public key, and the coordinator pins the key first registered for it
+- Someone who only knows a device's public key (for example, a member of the same room) cannot register as that device
+- The device key is the device's whole identity: if `private.key` is lost and a new one generated, the device ID changes and it becomes a new device (the old device ID, its assigned IPv4, ezPlay hostname and the rules that reference it are not carried over). Keep a backup of `private.key` in the data directory
+
 ---
 
 ## What Changes After Authentication
@@ -63,7 +71,7 @@ When not authenticated, the core automatically requests a **guest credential** f
 
 - Guest credentials are kept only in memory, are valid for 24 hours by default, and are renewed automatically before they expire
 - Guest credentials become invalid when the coordinator restarts; the core automatically requests a new one
-- A guest's user ID is derived from this device's key and is associated only with this device
+- A guest's user ID is derived from this device's key and is associated only with this device; the coordinator and other devices check this, so a guest cannot claim an authenticated user's ID
 
 ### Limitations Without Authentication
 
