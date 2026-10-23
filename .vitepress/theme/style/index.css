@@ -1,17 +1,30 @@
 @import './font.css';
 
 .VPHero .name.clip {
-  background: -webkit-linear-gradient(90deg, #1e3a8a 15%, #3b82f6 15%); /* 深蓝到亮蓝 */
+  background: linear-gradient(120deg, #1e3a8a 20%, #3b82f6 80%); /* 深蓝到亮蓝 */
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .VPDoc h1 {
-  background: -webkit-linear-gradient(90deg, deepskyblue 15%, dodgerblue 15%);
+  background: linear-gradient(120deg, #1e40af 10%, #38bdf8 90%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* 暗色模式下提亮，避免深蓝与背景混在一起 */
+.dark .VPHero .name.clip {
+  background: linear-gradient(120deg, #60a5fa 20%, #22d3ee 80%);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.dark .VPDoc h1 {
+  background: linear-gradient(120deg, #3b82f6 10%, #67e8f9 90%);
+  background-clip: text;
+  -webkit-background-clip: text;
 }
 
 /* 红色按钮 */
