@@ -107,7 +107,7 @@ Download:
 
 Linux usually needs no extra dependencies.
 
-The client core requires root privileges (to create the virtual network adapter and configure routes and DNS). If the system uses systemd-resolved, the core configures split DNS for `*.msst.net` through it; otherwise it intercepts DNS queries with iptables.
+The client core requires root privileges (to create the virtual network adapter and configure routes and DNS). If the system uses systemd-resolved, the core configures split DNS for `*.net.msst2031.cn` through it; otherwise it intercepts DNS queries with iptables.
 
 When running the core as root, add your everyday account to the `msst-net` group so the controller gets management permissions. See [Controller](/en/connect/install/controller#connecting-to-the-client-core).
 
@@ -123,7 +123,7 @@ See:
 
 macOS usually needs no extra dependencies.
 
-The client core requires root privileges. At runtime it creates `/etc/resolver/msst.net` so that `*.msst.net` domains are resolved by MSST-Net.
+The client core requires root privileges. At runtime it creates `/etc/resolver/net.msst2031.cn` so that `*.net.msst2031.cn` domains are resolved by MSST-Net.
 
 To run it in the background, we recommend setting up a system service.
 
@@ -152,6 +152,15 @@ If all of the above pass, the client is installed successfully.
 - 3.1 clients and 3.0.x clients **cannot communicate with each other** (starting with 3.1, all data is encrypted with WireGuard). Make sure every device that needs to talk to each other has been upgraded
 - The core automatically reuses the 3.0.x data directory, so device ID, user ID, virtual IP and firewall rules stay the same
 - See [Client Configuration](/en/connect/install/configuration#upgrading-from-3-0-x)
+
+## Upgrading to 3.1.7
+
+- The internal domain suffix changes from `.msst.net` to `.net.msst2031.cn` (`msst.net` isn't held by MSST): ezPlay hostnames become `<device>.<user>.ezplay.net.msst2031.cn`, custom namespaces `<namespace>.net.msst2031.cn`
+- The old suffix **no longer resolves**; old hostnames written into games, scripts or bookmarks must be changed to the new suffix by hand
+- Once the coordinator is upgraded, clients running 3.1.6 or older can no longer resolve any MSST-Net hostname (virtual IPs are unaffected), so upgrade all devices in your network
+- See [MSST-Net ezPlay](/en/connect/extras/ezplay) and [Custom Domains](/en/connect/extras/custom_domains)
+
+---
 
 ## Upgrading to 3.1.6
 

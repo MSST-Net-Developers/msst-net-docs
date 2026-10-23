@@ -11,7 +11,7 @@ description: "This chapter covers MSST-Net ezPlay hostnames."
 
 An **ezPlay hostname** is a human-readable hostname that MSST-Net assigns to every connected device, replacing hard-to-remember IP addresses on the virtual network.
 
-With an ezPlay hostname, you can reach devices on the network directly using a name like `archlinux.abjust.ezplay.msst.net`, just like typing a domain into your browser.
+With an ezPlay hostname, you can reach devices on the network directly using a name like `archlinux.abjust.ezplay.net.msst2031.cn`, just like typing a domain into your browser.
 
 ---
 
@@ -20,24 +20,26 @@ With an ezPlay hostname, you can reach devices on the network directly using a n
 ezPlay hostnames have the format:
 
 ```text
-{device mnemonic}.{user mnemonic}.ezplay.msst.net
+{device mnemonic}.{user mnemonic}.ezplay.net.msst2031.cn
 ```
 
 For example:
 
 ```text
-archlinux.abjust.ezplay.msst.net
+archlinux.abjust.ezplay.net.msst2031.cn
 ```
 
 Where:
 
 - `archlinux` is the device mnemonic
 - `abjust` is the user mnemonic
-- `.ezplay.msst.net` is the fixed suffix
+- `.ezplay.net.msst2031.cn` is the fixed suffix
 
 If the device or user hasn't set a mnemonic yet, the corresponding ID is used instead.
 
-> The short `.ezplay` suffix from the 3.0.x documentation is no longer used; use the full `.ezplay.msst.net` suffix.
+> The short `.ezplay` suffix from the 3.0.x documentation is no longer used; use the full `.ezplay.net.msst2031.cn` suffix.
+>
+> Up to 3.1.6 the suffix was `.ezplay.msst.net`. Since `msst.net` isn't held by MSST, it is `.ezplay.net.msst2031.cn` from 3.1.7, and the old suffix **no longer resolves**. If you've written old hostnames into games, scripts or bookmarks, change them to the new suffix.
 
 ---
 
@@ -48,7 +50,7 @@ ezPlay hostnames are assigned by the coordinator.
 When the client first connects to the coordinator, or after a mnemonic is updated, the coordinator checks the proposed hostname for uniqueness:
 
 - If the hostname is free, it is assigned directly
-- If the hostname is already taken by another device, the coordinator automatically appends a number (such as `archlinux-1.abjust.ezplay.msst.net`)
+- If the hostname is already taken by another device, the coordinator automatically appends a number (such as `archlinux-1.abjust.ezplay.net.msst2031.cn`)
 
 Once assigned, the hostname is stored locally on the device and shown on the controller home page, where it can be copied with one click.
 
@@ -61,8 +63,8 @@ Once assigned, the hostname is stored locally on the device and shown on the con
 Within the same MSST-Net network (both in the Network or in the same room), you can use ezPlay hostnames directly in programs or on the command line:
 
 ```bash
-ping archlinux.abjust.ezplay.msst.net
-ssh user@archlinux.abjust.ezplay.msst.net
+ping archlinux.abjust.ezplay.net.msst2031.cn
+ssh user@archlinux.abjust.ezplay.net.msst2031.cn
 ```
 
 > `ping` requires the peer to turn on Ping (ICMP) on its Defense page; see [Firewall Rules](/en/connect/acl/rules#ping-icmp).
@@ -72,7 +74,7 @@ ssh user@archlinux.abjust.ezplay.msst.net
 In games that let you enter an IP or hostname manually, you can enter the ezPlay hostname as the server address. For example, in Minecraft's multiplayer screen:
 
 ```text
-archlinux.abjust.ezplay.msst.net:25565
+archlinux.abjust.ezplay.net.msst2031.cn:25565
 ```
 
 In a room, you can also use **Copy Hostname** on a member card.
@@ -81,16 +83,18 @@ In a room, you can also use **Copy Hostname** on a member card.
 
 ## Local Name Resolution
 
-The client core has a built-in DNS resolver that only takes over queries for `*.msst.net`; other domains are still resolved by the system's existing DNS:
+The client core has a built-in DNS resolver that only takes over queries for `*.net.msst2031.cn`; other domains are still resolved by the system's existing DNS:
 
 | Platform | How it takes over |
 |---|---|
-| Windows | An NRPT rule sends `.msst.net` to `127.0.0.1:53` |
-| macOS | Creates `/etc/resolver/msst.net`, pointing to `127.0.0.1:21053` |
+| Windows | An NRPT rule sends `.net.msst2031.cn` to `127.0.0.1:53` |
+| macOS | Creates `/etc/resolver/net.msst2031.cn`, pointing to `127.0.0.1:21053` |
 | Linux | Prefers configuring split DNS for the virtual adapter via systemd-resolved; falls back to intercepting DNS queries with iptables |
 | Android | The VPN service sets MSST-Net's virtual DNS as the system DNS |
 
-When resolving `*.msst.net`:
+These names **resolve only on devices running the client core**; public DNS doesn't have them, so device hostnames aren't exposed. When upgrading to 3.1.7, the core removes the split-DNS rules older versions left for `msst.net`; in Linux's systemd-resolved mode, DNSSEC validation is turned off for MSST-Net's virtual adapter (affecting only queries for this domain).
+
+When resolving `*.net.msst2031.cn`:
 
 - Known peer devices are resolved locally, without network access
 - Unknown names are then looked up with the coordinator
@@ -126,6 +130,6 @@ The device mnemonic can be changed on the controller's **Settings** page. An aut
 
 ## Related
 
-- [Custom Domains](/en/connect/extras/custom_domains) — register your own namespace under `.msst.net`
+- [Custom Domains](/en/connect/extras/custom_domains) — register your own namespace under `.net.msst2031.cn`
 - [Identifiers](/en/connect/basics/identifiers) — learn about mnemonics and IDs
 - [Connections](/en/connect/basics/connections) — learn how virtual IP addresses are assigned

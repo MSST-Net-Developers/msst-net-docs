@@ -107,7 +107,7 @@ Windows 平台手动安装客户端核心时，需要额外安装 **wintun**。
 
 Linux 平台通常无需额外依赖。
 
-客户端核心需要 root 权限（创建虚拟网卡、配置路由和 DNS）。若系统使用 systemd-resolved，核心会通过它为 `*.msst.net` 配置分流 DNS；否则会使用 iptables 拦截 DNS 查询。
+客户端核心需要 root 权限（创建虚拟网卡、配置路由和 DNS）。若系统使用 systemd-resolved，核心会通过它为 `*.net.msst2031.cn` 配置分流 DNS；否则会使用 iptables 拦截 DNS 查询。
 
 以 root 运行核心时，请将日常账号加入 `msst-net` 用户组，以便控制器获得管理权限，详见 [《控制器说明》](/connect/install/controller#连接客户端核心)。
 
@@ -123,7 +123,7 @@ Linux 平台通常无需额外依赖。
 
 macOS 平台通常无需额外依赖。
 
-客户端核心需要 root 权限，运行时会创建 `/etc/resolver/msst.net`，使 `*.msst.net` 域名由 MSST-Net 解析。
+客户端核心需要 root 权限，运行时会创建 `/etc/resolver/net.msst2031.cn`，使 `*.net.msst2031.cn` 域名由 MSST-Net 解析。
 
 如需后台运行，建议配置系统服务。
 
@@ -152,6 +152,15 @@ macOS 平台通常无需额外依赖。
 - 3.1 客户端与 3.0.x 客户端**不能互通**（3.1 起所有数据均经 WireGuard 加密），请确保需要互相通信的设备都已升级
 - 核心会自动沿用 3.0.x 的数据目录，设备 ID、用户 ID、虚拟 IP 和防火墙规则保持不变
 - 详见 [《客户端配置》](/connect/install/configuration#从-3-0-x-升级)
+
+## 升级到 3.1.7
+
+- 内部域名后缀由 `.msst.net` 改为 `.net.msst2031.cn`（`msst.net` 并不归 MSST 持有）：ezPlay 主机名变为 `<设备>.<用户>.ezplay.net.msst2031.cn`，自定义命名空间变为 `<命名空间>.net.msst2031.cn`
+- 旧后缀**不再解析**；游戏、脚本或书签中写过的旧主机名需要手动改成新后缀
+- 协调服务器升级后，3.1.6 及以前的客户端无法再解析任何 MSST-Net 主机名（虚拟 IP 不受影响），请让网络中的设备都升级
+- 详见 [《MSST-Net ezPlay》](/connect/extras/ezplay)、[《自定义域名》](/connect/extras/custom_domains)
+
+---
 
 ## 升级到 3.1.6
 

@@ -38,7 +38,7 @@ After joining the Network, this device gets a fixed set of virtual addresses:
 - **Virtual IPv4**: `172.22.x.y` (deterministically derived from the device ID)
 - **Virtual IPv6**: `fd22:2222:2222:2222::xxxx:xxxx` (deterministically derived from the device ID)
 
-The device also gets an **ezPlay hostname** (such as `archlinux.abjust.ezplay.msst.net`) that can be used directly to reach it.
+The device also gets an **ezPlay hostname** (such as `archlinux.abjust.ezplay.net.msst2031.cn`) that can be used directly to reach it.
 
 See:
 

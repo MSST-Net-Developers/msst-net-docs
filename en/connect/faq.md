@@ -191,8 +191,8 @@ Once you've completed access authentication, the user mnemonic and user display 
 
 Check the following:
 
-1. Make sure you're using the full `.ezplay.msst.net` suffix (such as `archlinux.abjust.ezplay.msst.net`)
-2. Make sure the client core is running (`*.msst.net` is resolved locally by the core)
+1. Make sure you're using the full `.ezplay.net.msst2031.cn` suffix (such as `archlinux.abjust.ezplay.net.msst2031.cn`). The `.ezplay.msst.net` suffix of 3.1.6 and older no longer resolves, and this device needs 3.1.7 or newer
+2. Make sure the client core is running (`*.net.msst2031.cn` is resolved locally by the core)
 3. Make sure the target device is online and on the same network as this device (the Network or a room)
 4. On Linux, if the system doesn't use systemd-resolved, try changing the **DNS Configuration Mode** to "DNS interception only"
 

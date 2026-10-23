@@ -191,8 +191,8 @@ ICMP ping（`ping` 命令）默认被拒绝。
 
 请检查以下几点：
 
-1. 确认使用的是完整后缀 `.ezplay.msst.net`（如 `archlinux.abjust.ezplay.msst.net`）
-2. 确认客户端核心正在运行（`*.msst.net` 由核心在本机解析）
+1. 确认使用的是完整后缀 `.ezplay.net.msst2031.cn`（如 `archlinux.abjust.ezplay.net.msst2031.cn`）。3.1.6 及以前的 `.ezplay.msst.net` 已不再解析，本机需要是 3.1.7 或更新版本
+2. 确认客户端核心正在运行（`*.net.msst2031.cn` 由核心在本机解析）
 3. 确认目标设备在线，且与本机处于同一网络（大内网或房间）
 4. Linux 上若系统未使用 systemd-resolved，可尝试将 **DNS 配置模式** 改为"仅使用 DNS 拦截"
 

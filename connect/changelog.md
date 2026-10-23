@@ -7,6 +7,26 @@ description: "本章列出 MSST-Net 3.1.4 起各版本中用户可见的变化�
 
 {{ $frontmatter.description }}
 
+## 3.1.7
+
+### 内部域名改为 net.msst2031.cn
+
+- 内部域名后缀由 `.msst.net` 改为 `.net.msst2031.cn`，因为 `msst2031.cn` 由 MSST 持有，而 `msst.net` 不是
+- ezPlay 主机名：`<设备>.<用户>.ezplay.net.msst2031.cn`；官方服务：`*.srv.net.msst2031.cn`；自定义命名空间：`<命名空间>.net.msst2031.cn`
+- 旧后缀**不再解析**，也不再交给本机解析器；核心会删除旧版留下的 `msst.net` 分流规则（macOS、Windows）
+- 这些名称只在运行客户端核心的设备上解析，公网 DNS 中查不到
+- 协调服务器升级后，3.1.6 及以前的客户端无法再解析任何 MSST-Net 主机名（虚拟 IP 照常可用）
+- 详见 [《MSST-Net ezPlay》](/connect/extras/ezplay)
+
+### 自定义域名
+
+- 新增保留名称（`srv`、`ezplay` 等），不能作为命名空间申请；在此之前注册的同名命名空间不再解析
+- 记录的子域名、内容和 TTL 都会校验；每个命名空间最多 100 条记录
+- 添加、编辑记录前都会检查命名空间属于自己且已获批，无法修改官方服务、ezPlay 主机名或其他用户的记录
+- 详见 [《自定义域名》](/connect/extras/custom_domains#只能管理自己的命名空间)
+
+---
+
 ## 3.1.6
 
 ### 游戏发现改为端到端发送

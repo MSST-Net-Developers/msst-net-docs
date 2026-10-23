@@ -58,7 +58,7 @@ The controller has the following pages:
 |---|---|
 | Home | Core status, access authentication, create / join room, current room members, this device's identifiers and ezPlay hostname |
 | Defense | Firewall rules, Ping toggle, permission group management, access log |
-| Domains | Custom `.msst.net` namespaces and DNS records (authentication required) |
+| Domains | Custom `.net.msst2031.cn` namespaces and DNS records (authentication required) |
 | Settings | Device name and mnemonic, diagnostics & debugging, advanced network options |
 | About | Version and protocol information |
 

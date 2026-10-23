@@ -59,7 +59,7 @@ After authentication:
 - The **user mnemonic** and **user display name** come from your account information and are managed by the coordinator; changing them locally has no effect
 - Device mnemonics and device display names can still be changed freely locally
 - The device becomes visible to other authenticated devices on the network and can use Network Mode
-- You can apply for a custom `.msst.net` namespace
+- You can apply for a custom `.net.msst2031.cn` namespace
 
 See: [Identifiers](/en/connect/basics/identifiers)
 

@@ -7,6 +7,26 @@ description: "This chapter lists the user-visible changes in each MSST-Net relea
 
 {{ $frontmatter.description }}
 
+## 3.1.7
+
+### Internal domain is now net.msst2031.cn
+
+- The internal domain suffix changes from `.msst.net` to `.net.msst2031.cn`, since `msst2031.cn` is held by MSST and `msst.net` isn't
+- ezPlay hostnames: `<device>.<user>.ezplay.net.msst2031.cn`; official services: `*.srv.net.msst2031.cn`; custom namespaces: `<namespace>.net.msst2031.cn`
+- The old suffix **no longer resolves** and is no longer sent to the local resolver; the core removes the `msst.net` split-DNS rules older versions left (macOS, Windows)
+- These names resolve only on devices running the client core; public DNS doesn't have them
+- Once the coordinator is upgraded, clients running 3.1.6 or older can no longer resolve any MSST-Net hostname (virtual IPs work as usual)
+- See [MSST-Net ezPlay](/en/connect/extras/ezplay)
+
+### Custom domains
+
+- New reserved names (`srv`, `ezplay` and others) can't be applied for as namespaces; namespaces with these names registered earlier no longer resolve
+- Record subdomains, content and TTL are validated; each namespace holds at most 100 records
+- Adding or editing a record checks that the namespace is yours and approved; official services, ezPlay hostnames and other users' records can't be changed
+- See [Custom Domains](/en/connect/extras/custom_domains#only-your-own-namespace)
+
+---
+
 ## 3.1.6
 
 ### Game discovery is end to end

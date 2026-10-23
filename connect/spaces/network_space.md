@@ -38,7 +38,7 @@ description: "本章主要讲述 MSST-Net 大内网模式的运作机制。"
 - **虚拟 IPv4**：`172.22.x.y`（由设备 ID 确定性推导）
 - **虚拟 IPv6**：`fd22:2222:2222:2222::xxxx:xxxx`（由设备 ID 确定性推导）
 
-同时，本机会获得一个 **ezPlay 主机名**（如 `archlinux.abjust.ezplay.msst.net`），可作为主机名直接访问本机。
+同时，本机会获得一个 **ezPlay 主机名**（如 `archlinux.abjust.ezplay.net.msst2031.cn`），可作为主机名直接访问本机。
 
 详见：
 

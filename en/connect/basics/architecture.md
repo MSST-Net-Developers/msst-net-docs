@@ -38,7 +38,7 @@ It is responsible for:
 - Encrypting all data exchanged with peers using WireGuard
 - Choosing the connection path (direct or relayed)
 - Enforcing firewall rules and interactive authorization
-- Resolving `*.msst.net` domains locally
+- Resolving `*.net.msst2031.cn` domains locally
 - Forwarding games' LAN discovery broadcasts end to end between room members
 
 The core keeps running even when the controller is closed, so network connectivity is unaffected.
@@ -88,11 +88,11 @@ The coordinator is MSST-Net's control plane. It is responsible for:
 
 - Device onboarding, registration and online status
 - Deriving virtual IP addresses from device IDs and resolving address conflicts
-- Assigning ezPlay hostnames and providing `*.msst.net` resolution data
+- Assigning ezPlay hostnames and providing `*.net.msst2031.cn` resolution data
 - Creating and joining rooms, syncing members and verifying room passwords
 - Integrating with the MSST-IAS (OIDC device authorization flow) and issuing guest credentials
 - Registering relays and announcing available official relays (and their public keys) to clients
-- Managing custom `.msst.net` namespaces
+- Managing custom `.net.msst2031.cn` namespaces
 - Verifying that a registering device holds its key (**key proof**) and pinning each device ID's public key
 
 Device keys, users, rooms and other data are kept in a local SQLite database by default, so they survive restarts.
