@@ -7,6 +7,53 @@ description: "This chapter lists the user-visible changes in each MSST-Net relea
 
 {{ $frontmatter.description }}
 
+## 3.1.8
+
+### Faster recovery after switching networks
+
+- Desktop cores notice network changes themselves (switching between Wi-Fi and a phone hotspot, for example): once the new addresses are stable (about 2–4 seconds), they reconnect to the coordinator, register again with the relay from the new address, re-detect and report endpoints, and let every path that isn't direct probe for a direct connection again at once
+- A coordinator connection that receives nothing for 75 seconds counts as lost and is re-established (before, this could take until a TCP timeout — about 27 minutes in one test — during which the device was removed from its room and members got no game discovery from it)
+- A network switch that takes no more than about a minute no longer **removes the device from its room**; the other members don't see it leave and rejoin
+- On Android the system reports network changes; the coordinator is only reconnected when this device's addresses actually changed, not for the callback at startup or a second network coming and going
+- When automatic relay selection fails 3 times in a row, it keeps retrying in the background (from 30 seconds, doubling up to 5 minutes) instead of waiting for the next coordinator reconnect (for example when the network isn't up yet at boot)
+- See [Connections](/en/connect/basics/connections#network-changes)
+
+### Switching between direct and relayed
+
+- Direct paths are checked **every second**, so a dead direct path drops back to relayed within about 5 seconds. The **keepalive interval** setting now applies to relay registration only; before, it also set the probe interval of direct paths, so with it set (5–30 seconds) a dead direct path could take about a minute to be downgraded
+- New downgrade reason: when probe replies still arrive but the encrypted data this device sends gets no response at all for 20 seconds (an MTU black hole, for example), the path drops back to relayed at once and that direct address isn't used for 1 minute (doubling on repeats, up to 10 minutes; cleared when the network changes)
+- During the 30-second hold period after a downgrade, a punch request from the coordinator no longer upgrades the path straight back to direct, avoiding flapping
+- Round-trip times are measured from this device's own send times, so a peer can't fake them
+- Relay paths with round trips over 2 seconds are measured too; candidate addresses that are merely reordered no longer reset the probing backoff
+- See [Connections](/en/connect/basics/connections#direct-mode)
+
+### Game discovery
+
+- On Linux and macOS, capturing the broadcasts this device sends on its physical LAN follows the current network: it works after switching networks, and when the core starts before the network is up (before, only the addresses at startup were recognized, so after a switch every broadcast this device sent was dropped)
+- Subnet broadcasts are recognized by each network's actual broadcast address, e.g. `172.20.10.15` on an iPhone hotspot (`172.20.10.0/28`); ordinary addresses that happen to end in `.255` are no longer taken for broadcasts
+- See [Room Mode](/en/connect/spaces/room_space#game-discovery)
+
+### Controller
+
+- Member cards and the path view show **why the path last changed**, e.g. "relayed (direct path not responding)" — also after the controller reconnects
+- **Keepalive Interval** is now labeled **Relay Keepalive Interval**, noting that it doesn't affect the liveness checks of direct paths
+- New **command-line controller** `msst-net-cli`: the WebUI's features in a terminal on the device running the core; see [Controller](/en/connect/install/controller#cli)
+- Rules whose source is `*` read "all devices / all users"
+- Fixed: every **Endpoint History** time showed as 1970
+
+### Client installer 3.1.4
+
+- A new controller choice, **command line** (`--controller cli`), after which `msst-net-cli` can be run directly; the core can also run in Docker alone, with the command-line controller on the host (use `sudo msst-net-cli`)
+- **The 3.1.8 controller needs installer 3.1.4 or newer**; older installers refuse to install it, so update the installer first
+- See [Installing the Client](/en/connect/install/client#using-the-client-installer-recommended)
+
+### Servers
+
+- Coordinators and relays write their log to `coordinator.log` / `relay.log` in the working directory as well as the terminal (owner-only), rotated by size: 50 MB per file and 5 old files by default. This takes effect without changing existing configs
+- See [Self-Hosted Relay](/en/connect/selfhost/relay#running)
+
+---
+
 ## 3.1.7
 
 ### Internal domain is now net.msst2031.cn
@@ -83,8 +130,9 @@ For those running a coordinator or relay:
 | Coordinator | `device_key_proof` | `required` | Registering devices must prove they hold their key |
 | Coordinator | `persistence.driver` | `sqlite` (`coordinator.db`) | Device key pins survive restarts; the database file is owner-only |
 | Relay | `relay.register_auth` | `required` | Refuse unauthenticated registration; needs `control.server_url` |
+| Coordinator, relay | `log.file` | `coordinator.log` / `relay.log` | The log also goes to a file (since 3.1.8); set it empty for terminal output only |
 
-Coordinators and relays write the defaults of their version to `config.yaml` on first start, so **existing deployments must be changed by hand**. See [Security Model](/en/connect/basics/security#recommendations-for-operators).
+Coordinators and relays write the defaults of their version to `config.yaml` on first start, so **existing deployments must be changed by hand** (except `log.file`: when a config lacks it, the default applies). See [Security Model](/en/connect/basics/security#recommendations-for-operators).
 
 ---
 

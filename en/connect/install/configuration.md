@@ -100,7 +100,7 @@ The following settings are stored in `net_settings.json` in the data directory. 
 | Lock current paths | Off | Freeze the paths to all peers |
 | Relay preference | Automatic | Pin an **official** relay; takes effect after reconnecting to the coordinator |
 | MTU | Automatic (1280) | 1280–1500; takes effect after restarting the core |
-| Keepalive interval | 25 seconds | 5–30 seconds; applies to both relayed and direct connections |
+| Relay keepalive interval | 25 seconds | 5–30 seconds; applies to relay registration only — direct paths are checked every second (up to 3.1.7 it applied to direct paths too) |
 | DNS configuration mode (Linux only) | Prefer split DNS | See [MSST-Net ezPlay](/en/connect/extras/ezplay#local-name-resolution) |
 | Bypass other VPNs' full tunnels (Linux only) | On | MSST-Net's own traffic (peers, relays, coordinator) uses the physical network, not another VPN such as a Tailscale exit node; turn it off if relays or the coordinator are reachable only through the other VPN. Applies immediately |
 | Block other VPNs over MSST-Net (Linux only) | On | Tailscale and the like see MSST-Net addresses as a direct path and build a tunnel inside a tunnel; when on, they use their other paths. Applies immediately |

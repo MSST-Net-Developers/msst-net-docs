@@ -31,6 +31,8 @@ MSST-Net authenticates through the MSST Identity and Access System (MSST-IAS)'s 
 4. On the authentication page, log in to your MSST Identity and Access System (MSST-IAS) account and confirm the verification code
 5. You're done once the controller shows **Authentication successful!**
 
+With the command-line controller, run `msst-net-cli login`: the terminal shows the authentication URL and verification code, and you complete authentication in a browser on any device.
+
 After authentication, the controller shows the **authenticated user** and the credential's expiry. To switch accounts, click **Re-authenticate**; the new credential replaces the current one.
 
 > If you don't have an account yet, fill in the **MSST-Net Access Registration Form**. Once approved, an administrator will send the account details to the contact you provided.

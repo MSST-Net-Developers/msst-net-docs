@@ -35,14 +35,28 @@ On desktop systems (Windows / Linux / macOS), we recommend the **MSST-Net Client
 
 The installer automatically:
 
-- Installs the client core
+- Installs the client core and sets it up as a system service
 - Installs the client controller
 - Installs platform dependencies
 - Initializes the runtime environment
+- Upgrades, repairs, rolls back and uninstalls
 
 Download:
 
 [Download the MSST-Net Client Installer](https://github.com/MSST-Net-Developers/msst-net-installer-31x/releases)
+
+Run it as root on Linux / macOS, or as administrator on Windows; without arguments it starts an interactive wizard. You choose a controller during installation:
+
+| Choice | Description |
+|---|---|
+| Desktop (`--controller desktop`) | Graphical interface, for desktop users |
+| WebUI (`--controller webui`) | Runs as a service and is managed from a browser; on Linux it can also be deployed with Docker (`--docker`) |
+| Command line (`--controller cli`) | Installs `msst-net-cli` for use in a terminal (since 3.1.4) |
+| Core only (`--controller none`) | No controller |
+
+With the command line choice, `msst-net-cli` is on the command path (`/usr/local/bin/msst-net-cli` on Linux / macOS; on Windows the installation's `bin` directory is added to the system `PATH`). On Linux the core can also run in Docker alone, with the command-line controller on the host (`--controller cli --docker`); then use `sudo msst-net-cli`.
+
+> Controllers from 3.1.8 on need **installer 3.1.4 or newer**; older installers refuse to install them, so download the new installer first.
 
 ---
 
@@ -66,8 +80,13 @@ Desktop systems include:
 
 The following components are required:
 
-- Client core (usually prefixed with `msst-net-client-core`)
-- Client controller (usually prefixed with `msst-net-client-controller`)
+- Client core: `msst-net-core-<os>-<arch>` (`.exe` on Windows)
+- A client controller, any one of:
+  - Desktop: `msst-net-controller-desktop-…` (`.deb` / `.rpm` / `.tar.gz` on Linux, `.msi` on Windows, `.dmg` on macOS)
+  - WebUI: `msst-net-controller-webui-<os>-<arch>`
+  - Command line: `msst-net-controller-cli-<os>-<arch>`
+
+`<os>` is `linux`, `windows` or `macos`, and `<arch>` is `x86_64` or `aarch64`; Windows builds end in `.exe`. After downloading, you can rename them to `msst-net-webui` / `msst-net-cli` (the client installer installs them under these names). Up to 3.1.7, the WebUI file was named `msst-net-webui-<os>-<arch>`.
 
 For choosing a controller edition, see:
 
@@ -152,6 +171,16 @@ If all of the above pass, the client is installed successfully.
 - 3.1 clients and 3.0.x clients **cannot communicate with each other** (starting with 3.1, all data is encrypted with WireGuard). Make sure every device that needs to talk to each other has been upgraded
 - The core automatically reuses the 3.0.x data directory, so device ID, user ID, virtual IP and firewall rules stay the same
 - See [Client Configuration](/en/connect/install/configuration#upgrading-from-3-0-x)
+
+## Upgrading to 3.1.8
+
+- Nothing to do: fully interoperable with 3.1 clients up to 3.1.7
+- The faster recovery after switching networks mostly takes effect on **the device that switches**, so upgrade devices that switch networks often (laptops, phones) first
+- The **keepalive interval** now applies to relay registration only (labeled **Relay Keepalive Interval** in the controller), and direct paths are checked every second; if you set a long keepalive interval for direct paths before, there's nothing to adjust
+- Installing the 3.1.8 controller with the client installer needs installer 3.1.4 or newer
+- See [Release Notes](/en/connect/changelog#_3-1-8)
+
+---
 
 ## Upgrading to 3.1.7
 

@@ -14,7 +14,7 @@ MSST-Net consists of the following components:
 | Component | Runs on | Responsibilities |
 |---|---|---|
 | Client Core | Every connected device | Virtual network adapter, encryption, path selection, firewall, DNS, game discovery |
-| Client Controller | Every connected device (or via a browser) | Graphical interface; sends requests to the core and shows its state |
+| Client Controller | Every connected device (or via a browser) | Graphical or command-line interface; sends requests to the core and shows its state |
 | Coordinator | MSST-Net servers | Device registration, address allocation, rooms, ezPlay hostnames, access authentication |
 | Relay | MSST-Net servers, or self-hosted | Forwards encrypted data when a direct connection isn't possible |
 | MSST Identity and Access System (MSST-IAS) | MSST servers | Accounts and identity authentication |
@@ -41,7 +41,7 @@ It is responsible for:
 - Resolving `*.net.msst2031.cn` domains locally
 - Forwarding games' LAN discovery broadcasts end to end between room members
 
-The core keeps running even when the controller is closed, so network connectivity is unaffected.
+The core keeps running even when the controller is closed, so network connectivity is unaffected. The core also notices network changes on this device itself (switching between Wi-Fi and a phone hotspot, for example) and immediately reconnects to the coordinator, registers again with its relay and reports new endpoints; see [Connections](/en/connect/basics/connections#network-changes).
 
 Local ports used by the core:
 
@@ -57,7 +57,7 @@ Local ports used by the core:
 
 ## Client Controller
 
-The controller is an **unprivileged** graphical program that talks to the core over local IPC:
+The controller is an **unprivileged** program (the desktop, mobile and WebUI editions, and the command-line `msst-net-cli`) that talks to the core over local IPC:
 
 - Linux: Unix domain socket `/run/msst-net/ipc.sock` (`/var/run/msst-net/ipc.sock` on macOS)
 - Windows: named pipe `\\.\pipe\msst-net-ipc`

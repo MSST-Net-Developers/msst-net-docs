@@ -65,6 +65,14 @@ See: [Room Mode](/en/connect/spaces/room_space#game-discovery)
 
 ---
 
+### Can 3.1.8 be used together with older versions?
+
+Yes, 3.1.8 is fully interoperable with 3.1 clients up to 3.1.7. The faster recovery after switching networks mostly takes effect on the device that switches; for the controller to show why a path changed, the core needs to be 3.1.8 too.
+
+Installing the 3.1.8 controller with the client installer needs installer 3.1.4 or newer.
+
+---
+
 ## Connection Problems
 
 ### Why can't I connect to a peer device?
@@ -96,6 +104,22 @@ Also:
 
 - If either side turns on **Disable P2P direct connections**, no direct connection is established (an existing one drops back to relayed at once)
 - Direct probes are answered only for **known devices**: when two devices have just started talking and the other side doesn't know this device yet, the first probing round may fail; it is retried automatically
+- If the path view gives "direct path answers pings but drops data" as the change reason, the direct path lets the small probe packets through but drops regular data (often an MTU problem). The system stops using that address for a while (1 minute at first, up to 10 minutes); if you raised the MTU under the advanced options, set it back to automatic (1280)
+
+---
+
+### How long does it take to recover after switching networks?
+
+With 3.1.8, when switching between Wi-Fi and a phone hotspot:
+
+- The device that switches notices the new addresses within about 2–4 seconds, reconnects to the coordinator, registers again with its relay and reports its new endpoints
+- A dead direct path drops back to relayed within about 5 seconds, and relayed traffic resumes
+- Peers probe the new endpoints and upgrade to direct again once the conditions are met
+- If the switch takes no more than about a minute, the device stays in its room
+
+If the device that switches still runs 3.1.7 or older, recovery can take minutes, during which it is removed from its room and game discovery stops. Upgrade devices that switch networks often.
+
+See: [Connections](/en/connect/basics/connections#network-changes)
 
 ---
 
@@ -218,8 +242,9 @@ No. Since 3.1, no room has a member limit.
 2. Game discovery is only supported on **desktop (Windows / Linux / macOS)**; Android is not supported
 3. Make sure both use client 3.1.6 or newer: when a member card shows "version too old", there is no game discovery between the two
 4. Make sure the game uses a supported discovery method (Minecraft Java Edition multicast, mDNS, UDP broadcasts to MSST-Net's broadcast address, etc.)
-5. Under **Settings → Diagnostics & Debugging → Game Discovery**, check the sent, received and dropped counts
-6. Some games may require entering an IP or ezPlay hostname manually instead of automatic discovery
+5. Can't find it after switching networks (e.g. to a phone hotspot)? Upgrade both sides to 3.1.8. Up to 3.1.7, Linux and macOS dropped the broadcasts the device sent after a network switch, and the device that switched could be removed from the room for a while
+6. Under **Settings → Diagnostics & Debugging → Game Discovery**, check the sent, received and dropped counts
+7. Some games may require entering an IP or ezPlay hostname manually instead of automatic discovery
 
 ---
 

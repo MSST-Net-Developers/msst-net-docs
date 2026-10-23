@@ -103,7 +103,7 @@ When resolving `*.net.msst2031.cn`:
 
 ### Linux DNS Configuration Mode
 
-In the controller under **Settings → Diagnostics & Debugging → Advanced Options → DNS Configuration Mode**, you can choose:
+In the controller under **Settings → Diagnostics & Debugging → Advanced Options → DNS Configuration Mode** (command-line controller: `msst-net-cli settings set dns-mode prefer-split|iptables-only`), you can choose:
 
 | Mode | Description |
 |---|---|

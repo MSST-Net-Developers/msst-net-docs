@@ -64,6 +64,8 @@ When joining a room, the client automatically detects and reports this device's 
 
 If the client's connection to the coordinator drops and then reconnects, it automatically rejoins the same room without asking for the password again.
 
+Since 3.1.8 the client reconnects right after switching networks (between Wi-Fi and a phone hotspot, for example); if the switch takes no more than about a minute, the device stays in the room and the other members don't see it leave and rejoin. See [Connections](/en/connect/basics/connections#network-changes).
+
 ---
 
 ## Room Password
@@ -119,7 +121,7 @@ Discovery data forwarded:
 | mDNS | Multicast `224.0.0.251` | 5353 | LAN service discovery |
 | IPv4 broadcast | `172.22.255.255` or `255.255.255.255` | Any | Minecraft Bedrock Edition, Rusted Warfare and other games that discover by broadcast |
 
-On desktop, broadcasts this device sends on its physical LAN are captured too, rewritten into MSST-Net's broadcast and forwarded. Only UDP packets are forwarded.
+On Linux and macOS, broadcasts this device sends on its physical LAN (to `255.255.255.255`, or to the network's broadcast address, e.g. `172.20.10.15` on an iPhone hotspot) are captured too, rewritten into MSST-Net's broadcast and forwarded; after a network switch the capture follows the new network (since 3.1.8). On Windows only discovery traffic sent to the MSST-Net virtual adapter is forwarded. Only UDP packets are forwarded.
 
 ### How It Travels
 

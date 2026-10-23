@@ -28,7 +28,7 @@ We recommend it for any device that stays connected to MSST-Net long-term.
 
 The client core needs to create a virtual network adapter and configure routes and system DNS, so it should run with **administrator / root privileges**.
 
-> In the examples below, the client core executable is written as `msst-net-core`. File names in release packages may carry a platform suffix (usually prefixed with `msst-net-client-core`); replace it with your actual file name and install path.
+> In the examples below, the client core executable is written as `msst-net-core`. File names in release packages carry a platform suffix (`msst-net-core-<os>-<arch>`); replace it with your actual file name and install path. The client installer sets up the system service automatically.
 
 ---
 
@@ -215,7 +215,7 @@ Shows the current state of the service. You can also check the connection betwee
 
 ### Logs
 
-We recommend checking the logs regularly to help with troubleshooting. You can also **View Logs** directly in the controller.
+We recommend checking the logs regularly to help with troubleshooting. You can also **View Logs** directly in the controller, or run `msst-net-cli logs` with the command-line controller.
 
 ---
 

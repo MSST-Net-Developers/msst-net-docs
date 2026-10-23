@@ -102,6 +102,7 @@ Timeouts are determined by the client core. The countdown shown in the controlle
 | Desktop | In-app dialog plus system notification (Linux uses native desktop notifications; Windows / macOS via the tray) |
 | Mobile (Android) | In-app dialog plus system notification with action buttons; notifications arrive even when the controller UI isn't open |
 | WebUI | Interactive authorization is **not supported**; requests must be handled on the device itself, otherwise they time out |
+| Command line (`msst-net-cli`) | Interactive authorization is **not supported**, as with the WebUI; afterwards, `msst-net-cli access` can add rules from the access log |
 
 ---
 

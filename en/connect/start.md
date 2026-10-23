@@ -99,7 +99,7 @@ See:
 
 After connecting, we recommend some basic checks:
 
-- In **Settings → Diagnostics & Debugging**, confirm that the coordinator is connected and the virtual network adapter is ready
+- In **Settings → Diagnostics & Debugging**, confirm that the coordinator is connected and the virtual network adapter is ready (with the command-line controller, run `msst-net-cli status`)
 - Check that the controller home page shows this device's ezPlay hostname
 - Try joining a room and confirm you can see other members
 - Test basic communication (for example, connecting to someone else's game server)

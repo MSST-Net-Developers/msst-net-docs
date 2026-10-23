@@ -35,14 +35,28 @@ MSST-Net 提供以下安装方式：
 
 客户端安装器可自动完成以下操作：
 
-- 安装客户端核心
+- 安装客户端核心，并配置为系统服务
 - 安装客户端控制器
 - 安装平台依赖
 - 初始化运行环境
+- 升级、修复、回滚与卸载
 
 下载地址：
 
 [下载 MSST-Net 客户端安装器](https://gitee.com/Abjust/msst-net-installer-31x/releases)
+
+在 Linux / macOS 上以 root 运行，在 Windows 上以管理员身份运行；不带参数时进入交互式向导。安装时需要选择控制器：
+
+| 选项 | 说明 |
+|---|---|
+| 桌面版（`--controller desktop`） | 图形界面，适合桌面用户 |
+| WebUI（`--controller webui`） | 以服务运行，通过浏览器远程管理；在 Linux 上也可以用 Docker 部署（`--docker`） |
+| 命令行（`--controller cli`） | 安装 `msst-net-cli`，在终端中使用（3.1.4 起） |
+| 仅核心（`--controller none`） | 不安装控制器 |
+
+选择命令行时，`msst-net-cli` 会出现在命令路径中（Linux / macOS 为 `/usr/local/bin/msst-net-cli`；Windows 上安装目录的 `bin` 会加入系统 `PATH`）。在 Linux 上也可以只用 Docker 运行核心、命令行控制器装在主机上（`--controller cli --docker`），这时需要用 `sudo msst-net-cli`。
+
+> 3.1.8 及更新的控制器需要 **3.1.4 或更新的安装器**，旧版安装器会拒绝安装，请先下载新版安装器。
 
 ---
 
@@ -66,8 +80,13 @@ MSST-Net 提供以下安装方式：
 
 安装时需要以下组件：
 
-- 客户端核心（通常以 `msst-net-client-core` 开头）
-- 客户端控制器（通常以 `msst-net-client-controller` 开头）
+- 客户端核心：`msst-net-core-<系统>-<架构>`（Windows 为 `.exe`）
+- 客户端控制器，任选其一：
+  - 桌面版：`msst-net-controller-desktop-…`（Linux 为 `.deb` / `.rpm` / `.tar.gz`，Windows 为 `.msi`，macOS 为 `.dmg`）
+  - WebUI 版：`msst-net-controller-webui-<系统>-<架构>`
+  - 命令行版：`msst-net-controller-cli-<系统>-<架构>`
+
+其中 `<系统>` 为 `linux`、`windows` 或 `macos`，`<架构>` 为 `x86_64` 或 `aarch64`；Windows 版带 `.exe` 后缀。下载后可以改名为 `msst-net-webui` / `msst-net-cli`（客户端安装器也是这样安装的）。3.1.7 及以前的 WebUI 版文件名为 `msst-net-webui-<系统>-<架构>`。
 
 控制器版本选择请参考：
 
@@ -152,6 +171,16 @@ macOS 平台通常无需额外依赖。
 - 3.1 客户端与 3.0.x 客户端**不能互通**（3.1 起所有数据均经 WireGuard 加密），请确保需要互相通信的设备都已升级
 - 核心会自动沿用 3.0.x 的数据目录，设备 ID、用户 ID、虚拟 IP 和防火墙规则保持不变
 - 详见 [《客户端配置》](/connect/install/configuration#从-3-0-x-升级)
+
+## 升级到 3.1.8
+
+- 无需任何操作，与 3.1.7 及以前的 3.1 客户端完全互通
+- 切换网络后的快速恢复主要在**切换网络的那台设备**上生效，请优先升级经常切换网络的设备（笔记本电脑、手机）
+- **保活间隔** 现在只作用于中转登记（控制器中改名为 **中转保活间隔**），直连的存活探测固定为每秒一次；此前为直连设置过较长保活间隔的，无需再调整
+- 使用客户端安装器安装 3.1.8 的控制器时，需要 3.1.4 或更新的安装器
+- 详见 [《版本更新说明》](/connect/changelog#_3-1-8)
+
+---
 
 ## 升级到 3.1.7
 

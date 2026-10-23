@@ -19,7 +19,7 @@ mc.abjust.net.msst2031.cn     → CNAME → archlinux.abjust.ezplay.net.msst2031
 
 Your friends can then use `mc.abjust.net.msst2031.cn` to reach your Minecraft server; even if you switch devices, you only need to update this one record.
 
-Custom domains are managed on the controller's **Domains** page.
+Custom domains are managed on the controller's **Domains** page (command-line controller: `msst-net-cli dns`).
 
 > Custom domains **require access authentication first**.
 

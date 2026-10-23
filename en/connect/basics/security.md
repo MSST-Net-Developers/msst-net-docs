@@ -59,6 +59,7 @@ What a peer announces through the coordinator isn't taken at face value either:
 - Loopback, multicast, broadcast and link-local addresses among its direct candidates are ignored, and at most 16 are used
 - A relay it announces is used only if it is in the official relay list
 - This device answers direct probes only from known devices
+- Direct-path latency is measured from the send time this device recorded, so a peer can't fake latency in its replies to influence path selection (since 3.1.8)
 
 ---
 
@@ -101,6 +102,8 @@ When running a coordinator or relay:
 | Relay | `relay.register_auth: required` | Refuse unauthenticated registration (default for new deployments; needs the coordinator's address) |
 
 Coordinators and relays write the defaults of their version to `config.yaml` on first start, so existing deployments need these settings changed by hand.
+
+Since 3.1.8 both also write their log to `coordinator.log` / `relay.log` in the working directory. The log holds device IDs, user IDs and addresses, and the files are created with mode `0600`; don't loosen their permissions or share raw logs publicly.
 
 ---
 

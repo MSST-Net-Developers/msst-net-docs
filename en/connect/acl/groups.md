@@ -13,7 +13,7 @@ A **permission group** is a reusable set of principals that combines multiple de
 
 When creating a firewall rule, you can pick a permission group as the rule's source instead of entering every member one by one each time.
 
-Permission groups can be created, edited and deleted in the controller under **Defense → Permission Groups**.
+Permission groups can be created, edited and deleted in the controller under **Defense → Permission Groups** (command-line controller: `msst-net-cli groups`).
 
 > Permission group management is not available on mobile (Android).
 

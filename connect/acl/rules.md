@@ -35,6 +35,16 @@ MSST-Net 采用**默认拒绝**策略：未匹配任何规则的入站访问一�
 
 当前版本只支持修改规则的**备注**和**启用状态**。如需修改来源、端口或动作，请使用"复制为新规则"，再删除旧规则。
 
+使用命令行控制器时，对应 `msst-net-cli rules` 的 `list`、`add`、`enable`、`disable`、`comment`、`delete`、`clear` 子命令，例如：
+
+```bash
+msst-net-cli rules add --device pc.alice --service minecraft-java          # 允许一台设备访问 Minecraft Java 版
+msst-net-cli rules add --user bob --port tcp/8080 --deny                     # 拒绝某用户访问 TCP 8080
+msst-net-cli rules add --room-members --port udp/19132 --comment 基岩版联机  # 房间级规则
+```
+
+覆盖全部端口的规则（`--all-ports`）同样会给出安全风险提示，需要确认。
+
 > **移动端**（Android）不能通过向导手动创建规则，但可以在以下场景中添加规则：
 > - 处理交互式授权请求时
 > - 在访问记录中对某条记录添加规则

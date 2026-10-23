@@ -25,7 +25,7 @@ features:
     details: Bring game rooms, home services and public services onto MSST-Net and keep them within reach
 
   - title: Smart Connections
-    details: Automatically chooses between peer-to-peer and relayed paths, balancing reliability and performance
+    details: Automatically chooses between peer-to-peer and relayed paths, balancing reliability and performance, and recovers within seconds after a network switch
 
   - title: Access Control
     details: Permission groups and interactive authorization make access control more intuitive, flexible and practical

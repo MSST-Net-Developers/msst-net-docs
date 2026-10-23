@@ -42,7 +42,7 @@ For how to deploy a self-hosted relay, see: [Self-Hosted Relay](/en/connect/self
 
 ## Creating a Room with a Room Relay
 
-1. In the controller, click **Create Room** and enter a room name
+1. In the controller, click **Create Room** and enter a room name (command-line controller: `msst-net-cli room create <name> --relay <official relay address or connection string>`, adding `--relay-password` if the relay needs an access password)
 2. Under **Room Relay**, choose:
    - **None**
    - **Official: &lt;address&gt;**

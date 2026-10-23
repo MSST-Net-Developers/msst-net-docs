@@ -16,6 +16,8 @@ The WebUI controller (`msst-net-webui`) is suited for:
 
 The WebUI runs on the same device as the client core, connects to the core over local IPC, and then serves the same interface as the desktop edition to the browser over HTTPS.
 
+If you only manage the device in its local terminal (or over SSH) and don't need a browser, the command-line controller `msst-net-cli` is an alternative: it needs no access password and opens no ports. See [Controller](/en/connect/install/controller#cli).
+
 ---
 
 ## First Start

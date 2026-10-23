@@ -133,6 +133,12 @@ After starting, the relay automatically registers with the coordinator and sends
 
 The relay's runtime status is output periodically as stats logs (one line every 60 seconds by default); there is no management API.
 
+Besides the terminal, the log is also written to `relay.log` in the working directory (since 3.1.8; mode 0600, as it holds device IDs and addresses), rotated by size into `relay.log.1` (newest) through `relay.log.5`, 50 MB per file by default, about 300 MB at most. If the log file can't be opened or written, the relay keeps running and logs to the terminal only. Devices appear in the log as `id=` followed by the hex part of their device ID; to find a device's registrations and rebindings (e.g. `device-1a2b3c4d`) when troubleshooting:
+
+```bash
+grep -h 'id=1a2b3c4d' relay.log*
+```
+
 ---
 
 ## Forwarding Rules for Self-Hosted Relays
@@ -173,6 +179,8 @@ The main default limits (all adjustable in `config.yaml`):
 | `discovery.sender_rate` | 10/s | Game discovery send rate per device (old clients' game discovery only) |
 | `discovery.max_fanout` | 256 | Maximum number of members each discovery packet is delivered to (same) |
 | `log.stats_interval` | 60s | Stats log interval; 0 disables it |
+| `log.file` | `relay.log` | Log file (relative to the working directory); empty for terminal output only |
+| `log.max_size_mb` / `log.max_backups` | 50 / 5 | Size limit of one log file / number of old files kept |
 
 ---
 

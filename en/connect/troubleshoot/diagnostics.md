@@ -9,7 +9,7 @@ description: "This chapter covers the diagnostics and debugging tools in the con
 
 ## Where to Find It
 
-The diagnostic tools are in the controller under **Settings → Diagnostics & Debugging**.
+The diagnostic tools are in the controller under **Settings → Diagnostics & Debugging**. The command-line controller gives the same information; see [CLI Diagnostics](#cli-diagnostics).
 
 All diagnostic information comes directly from the client core and reflects its real state.
 
@@ -102,8 +102,11 @@ Shows game discovery statistics:
 Lists the current path and encryption state for each peer:
 
 - **Selected**: the path in use (relay or direct address)
+- **Last change reason**: e.g. "direct path not responding" or "no direct candidate responded"; see [Connections](/en/connect/basics/connections#change-reasons) for what each reason means
 - **Encryption**: WireGuard session state (not established / handshaking / encrypted / failed / no public key) and handshake time
 - The number of consecutive failed direct-probing rounds, and when the next probe will happen
+
+The member cards on the home page also show the reason after the path, e.g. "Path: relayed (direct path not responding)". With a core up to 3.1.7, no reason is shown.
 
 ### Network Transport
 
@@ -124,7 +127,7 @@ Shows data sent, received and dropped per peer. Reset automatically when the pat
 
 - **Current endpoints**: the direct-connection candidate addresses this device most recently reported
 - **Endpoint history**: the last 10 reported endpoints
-- **Keepalive interval**: 5–30 seconds, 25 seconds by default; applies to both relayed and direct connections
+- **Relay keepalive interval**: 5–30 seconds, 25 seconds by default; applies to relay registration only — direct paths are checked every second
 - **Force Refresh Endpoints**: re-detect and report endpoints immediately
 
 ---
@@ -148,6 +151,25 @@ The peer's client core answers the probes itself, so the peer's Ping (ICMP) togg
 - Higher latency through a relay is normal; to find out why there is no direct path, check the direct probing state in the path view
 
 > Cores up to 3.1.4 always probed the peer's first direct candidate, which timed out for every relayed peer; with such a core the controller doesn't show the Path line.
+
+---
+
+## CLI Diagnostics
+
+With the command-line controller `msst-net-cli`, these commands show the same information (add `--json` for the core's raw data):
+
+| Command | Shows |
+|---|---|
+| `msst-net-cli status` | Connection status, this device's identity, the room |
+| `msst-net-cli nodes` | Known nodes and their paths (with change reasons) |
+| `msst-net-cli paths` | Path view: direct candidates, encryption state, change reasons |
+| `msst-net-cli relays` | Relays, registration state and game discovery counters |
+| `msst-net-cli traffic` | Traffic counters per node |
+| `msst-net-cli endpoints` | Reported endpoints and their history (`--refresh` re-detects first) |
+| `msst-net-cli diag-ping <device ID>` | Ping a node over the path actually in use |
+| `msst-net-cli logs` | Client core log (`-n` sets the number of lines) |
+
+See [Controller](/en/connect/install/controller#cli).
 
 ---
 

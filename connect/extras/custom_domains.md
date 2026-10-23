@@ -19,7 +19,7 @@ mc.abjust.net.msst2031.cn     → CNAME → archlinux.abjust.ezplay.net.msst2031
 
 之后好友就可以用 `mc.abjust.net.msst2031.cn` 访问你的 Minecraft 服务器，即使你更换了设备，也只需修改这条记录。
 
-自定义域名在控制器的 **域名** 页面中管理。
+自定义域名在控制器的 **域名** 页面中管理（命令行控制器：`msst-net-cli dns`）。
 
 > 自定义域名功能**需要先完成接入认证**。
 

@@ -35,6 +35,16 @@ On the controller's **Defense** page you can:
 
 The current version only supports changing a rule's **note** and **enabled state**. To change the source, port or action, use "Duplicate as New Rule" and then delete the old rule.
 
+With the command-line controller, use the `list`, `add`, `enable`, `disable`, `comment`, `delete` and `clear` subcommands of `msst-net-cli rules`, for example:
+
+```bash
+msst-net-cli rules add --device pc.alice --service minecraft-java              # allow one device to reach Minecraft Java Edition
+msst-net-cli rules add --user bob --port tcp/8080 --deny                         # deny a user TCP 8080
+msst-net-cli rules add --room-members --port udp/19132 --comment bedrock-lan     # room-level rule
+```
+
+Rules covering all ports (`--all-ports`) come with the same security warning and need confirmation.
+
 > On **mobile** (Android), rules can't be created manually through the wizard, but they can be added:
 > - When handling an interactive authorization request
 > - From an entry in the access log

@@ -17,7 +17,7 @@ From the access log you can see:
 - Whether the access was allowed, denied or silently denied
 - Why that decision was made (which rule matched, or why no authorization prompt was shown)
 
-The access log can be viewed in the controller under **Defense → Access Log**.
+The access log can be viewed in the controller under **Defense → Access Log** (command-line controller: `msst-net-cli access list`, and `access allow-once`, `allow`, `deny`, `revoke` add or remove rules based on an entry).
 
 ---
 

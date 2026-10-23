@@ -103,7 +103,7 @@ archlinux.abjust.ezplay.net.msst2031.cn:25565
 
 ### Linux DNS 配置模式
 
-在控制器的 **设置 → 诊断与调试 → 高级选项 → DNS 配置模式** 中可以选择：
+在控制器的 **设置 → 诊断与调试 → 高级选项 → DNS 配置模式** 中可以选择（命令行控制器：`msst-net-cli settings set dns-mode prefer-split|iptables-only`）：
 
 | 模式 | 说明 |
 |---|---|
