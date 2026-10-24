@@ -233,7 +233,7 @@ When a device switches networks (for example between Wi-Fi and a phone hotspot),
 Once a network change is noticed, the core immediately:
 
 1. Reconnects to the coordinator (retrying at once if it was waiting to reconnect)
-2. Registers again with the relay (and the room relay) from the new address
+2. Resolves the host names of the relay (and the room relay) again and registers from the new address. The new network may lack the address family they resolved to, e.g. after moving from a phone hotspot to a Wi-Fi without IPv6 (since 3.1.9)
 3. Re-detects and reports its endpoints, so peers start probing the new direct addresses
 4. Clears the hold periods and probing backoff of paths that aren't direct, and every paused direct address, then probes again at once (direct paths keep their liveness checks and drop back to relayed within about 5 seconds if dead)
 5. Clears the local DNS cache
@@ -282,7 +282,7 @@ Candidate addresses reported by peers are filtered: loopback, unspecified, multi
 
 MSST-Net prefers IPv6 for direct probing.
 
-If the local network doesn't support IPv6 routing, the system automatically falls back to IPv4.
+If the local network doesn't support IPv6 routing, the system automatically falls back to IPv4: peers' IPv6 candidates aren't probed and relays are reached over IPv4 only; IPv6 is used again once the network supports it (since 3.1.9).
 
 In dual-stack IPv4/IPv6 environments, IPv6 candidate addresses are probed first.
 

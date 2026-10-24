@@ -172,6 +172,14 @@ If all of the above pass, the client is installed successfully.
 - The core automatically reuses the 3.0.x data directory, so device ID, user ID, virtual IP and firewall rules stay the same
 - See [Client Configuration](/en/connect/install/configuration#upgrading-from-3-0-x)
 
+## Upgrading to 3.1.9
+
+- Nothing to do, and fully interoperable with other 3.1 clients; the fixes are all in the core, so upgrading only the core is enough (the IPC protocol is unchanged, so the 3.1.8 controller keeps working)
+- The fixes take effect on **this device**: each member judges the room relay's availability on its own, and the relay recovery after a network switch happens on the device that switches
+- See [Release Notes](/en/connect/changelog#_3-1-9)
+
+---
+
 ## Upgrading to 3.1.8
 
 - Nothing to do: fully interoperable with 3.1 clients up to 3.1.7

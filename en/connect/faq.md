@@ -65,6 +65,14 @@ See: [Room Mode](/en/connect/spaces/room_space#game-discovery)
 
 ---
 
+### The room has a room relay, but it always says "room relay unavailable"?
+
+When the room relay is the same server as your own relay (for example, both are the official `us1`), clients up to 3.1.8 wrongly mark it unavailable about 10 seconds after joining; room traffic keeps going through each member's preferred relay, so connections still work. Upgrading to 3.1.9 fixes this. If it still says unavailable after upgrading, check whether the relay itself is online.
+
+See: [Room Relay](/en/connect/spaces/room_relay#availability-and-automatic-fallback)
+
+---
+
 ### Can 3.1.8 be used together with older versions?
 
 Yes, 3.1.8 is fully interoperable with 3.1 clients up to 3.1.7. The faster recovery after switching networks mostly takes effect on the device that switches; for the controller to show why a path changed, the core needs to be 3.1.8 too.
@@ -116,6 +124,8 @@ With 3.1.8, when switching between Wi-Fi and a phone hotspot:
 - A dead direct path drops back to relayed within about 5 seconds, and relayed traffic resumes
 - Peers probe the new endpoints and upgrade to direct again once the conditions are met
 - If the switch takes no more than about a minute, the device stays in its room
+
+With 3.1.8, moving from a network with IPv6 (a phone hotspot, for example) to one without could leave the relay path down until the next relay selection, occasionally interrupting the encrypted session for minutes; 3.1.9 fixes this.
 
 If the device that switches still runs 3.1.7 or older, recovery can take minutes, during which it is removed from its room and game discovery stops. Upgrade devices that switch networks often.
 

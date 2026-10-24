@@ -7,6 +7,26 @@ description: "This chapter lists the user-visible changes in each MSST-Net relea
 
 {{ $frontmatter.description }}
 
+## 3.1.9
+
+All fixes in this release are in the core. The controller is released as 3.1.9 too, without functional changes; the IPC protocol is unchanged, so the 3.1.8 controller and the 3.1.4 installer keep working.
+
+### Room relay
+
+- Fixed: when the room relay was the same server as this device's preferred relay (or a member's relay), the room showed **room relay unavailable** about 10 seconds after joining, every time, and room traffic kept going through each member's preferred relay. For example, the room relay was the official `us1` and this device had also selected `us1` automatically. The relay was pinged only once, and its reply was credited to the preferred relay only
+- A single lost ping no longer counts as two unanswered ones: an unanswered ping used to expire only after 6 seconds, blocking the next ping 5 seconds later, so the room relay was marked unavailable more easily
+- The room relay's host name is resolved again after a network change
+- See [Room Relay](/en/connect/spaces/room_relay#availability-and-automatic-fallback)
+
+### Falling back to relayed after a network change
+
+- Fixed: after moving from a network with IPv6 (a phone hotspot, for example) to one without (some home Wi-Fi networks), the client kept sending data and registrations to the relay's IPv6 address, all of which failed (`Network is unreachable`). Dead direct paths did drop back to relayed, but the relay path didn't work either until the next relay selection; meanwhile the encrypted session could be down for minutes
+- On a network change, the host names of all relays are resolved again; without an IPv6 route, a previously resolved IPv6 address is no longer kept
+- While this device has no IPv6 route, peers' IPv6 direct candidates aren't probed (every probe to them used to fail at once); they're probed again once IPv6 is back
+- See [Connections](/en/connect/basics/connections#network-changes)
+
+---
+
 ## 3.1.8
 
 ### Faster recovery after switching networks
