@@ -37,7 +37,7 @@ description: "本章主要讲述 MSST-Net 客户端核心的配置文件、命�
 | 配置项 | 默认值 | 说明 |
 |---|---|---|
 | `coordinator_url` | `https://coord.msst-net.msst2031.cn` | 协调服务器地址 |
-| `udp_port` | `21031` | 数据通道 UDP 端口 |
+| `udp_port` | `21031` | 数据通道 UDP 端口；核心会在系统防火墙中放行它（见 [系统防火墙](/connect/install/client#系统防火墙)） |
 | `tun_name` | `msst0` | 虚拟网卡名称 |
 | `tun_mtu` | `1280` | 虚拟网卡 MTU（网络设置中的 MTU 优先） |
 | `metrics_port` | `9100` | Prometheus 指标端口 |

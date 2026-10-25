@@ -37,7 +37,7 @@ Available options:
 | Option | Default | Description |
 |---|---|---|
 | `coordinator_url` | `https://coord.msst-net.msst2031.cn` | Coordinator address |
-| `udp_port` | `21031` | UDP port for the data channel |
+| `udp_port` | `21031` | UDP port for the data channel; the core allows it in the system firewall (see [System Firewall](/en/connect/install/client#system-firewall)) |
 | `tun_name` | `msst0` | Virtual network adapter name |
 | `tun_mtu` | `1280` | Virtual network adapter MTU (the MTU in network settings takes precedence) |
 | `metrics_port` | `9100` | Prometheus metrics port |

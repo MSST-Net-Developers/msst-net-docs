@@ -42,6 +42,8 @@ The MSST-Net 3.1 graphical controllers share the same interface, and there is al
 | Feature | Desktop | Mobile | WebUI | Command line |
 |---|---|---|---|---|
 | Rule wizard and permission group management | Yes | No (rules can be added from authorization requests, access logs and room members) | Yes | Yes (`rules`, `groups` commands) |
+| Editing permanent rules | Everything | Note and enabled state only | Everything | Everything (`rules edit`) |
+| Update reminder | Notice at the top + About page | Checks the app itself only | Notice at the top + About page | `check-update` command |
 | Add rules for room members | Yes (right-click) | Yes (long-press) | Yes | Yes (`rules add --device`, `--room-members`) |
 | Interactive authorization | Dialog + system notification | Dialog + notification with action buttons | **No** | **No** |
 | Access password and IP allowlist | — | — | Required | — |
@@ -61,7 +63,7 @@ The graphical controllers have the following pages:
 | Defense | Firewall rules, Ping toggle, permission group management, access log |
 | Domains | Custom `.net.msst2031.cn` namespaces and DNS records (authentication required) |
 | Settings | Device name and mnemonic, diagnostics & debugging, advanced network options |
-| About | Version and protocol information |
+| About | Version and protocol information, update check result |
 
 ---
 
@@ -124,7 +126,7 @@ msst-net-cli settings set keepalive 15            # change a network setting
 | `status` / `watch` | Overview / keep showing state changes |
 | `nodes` | Known nodes and their paths |
 | `room` | Rooms: `show`, `create`, `join`, `leave` |
-| `rules` | Firewall rules: `list`, `add`, `enable`, `disable`, `comment`, `delete`, `clear` |
+| `rules` | Firewall rules: `list`, `add`, `edit`, `enable`, `disable`, `comment`, `delete`, `clear` |
 | `groups` | Permission groups |
 | `services` | Service templates for rules |
 | `access` | Access log, and `allow-once`, `allow`, `deny`, `revoke` based on it |
@@ -134,6 +136,7 @@ msst-net-cli settings set keepalive 15            # change a network setting
 | `settings` | Network settings: `show`, `set` |
 | `relays`, `paths`, `traffic`, `endpoints`, `diag-ping`, `logs` | Diagnostics (see [Diagnostics](/en/connect/troubleshoot/diagnostics#cli-diagnostics)) |
 | `dns` | Custom DNS namespaces and records |
+| `check-update` | Check whether newer core and controller releases exist (only the controller when the core isn't running) |
 | `raw` | Send any IPC request (for diagnostics) |
 
 Notes:
@@ -172,22 +175,47 @@ The client core is a privileged process, so being able to open the IPC socket do
 | Viewer | Other users with a local login session | View status only |
 | — | Everyone else | Connection refused |
 
-The client installer creates these groups and adds the installing user.
+The client installer creates these groups and adds the installing user (on Windows, the user signed in at the desktop).
 
-When the core runs as a system service under root, add your everyday account to the `msst-net` group to get admin permissions:
+When the core runs as root / a system service, add your everyday account to the admin group to get admin permissions. Linux / macOS:
 
 ```bash
 sudo groupadd -f msst-net
 sudo usermod -aG msst-net $USER
 ```
 
-Group membership is checked on every connection, so **there is no need to restart the core**; however, you must log in again before the new group membership applies to that user's processes.
+Windows (Command Prompt run as administrator):
+
+```bat
+net localgroup "MSST-Net Administrators" <username> /add
+```
+
+Group membership is checked on every connection: just **reopen the controller** — no need to restart the core or to log in again.
+
+> Up to 3.1.9 the Windows core only saw the group memberships of the logon session, so you had to sign out of Windows and back in after adding the group.
 
 When connected with the viewer role, the controller shows a read-only notice and modifications are unavailable.
 
 ### Version Compatibility
 
 When connecting, the controller negotiates the IPC protocol version with the core and shows both protocol versions on the **About** page. If the core is older and lacks certain features, the controller disables those features and explains why.
+
+---
+
+## Update Reminder
+
+From 3.1.10 the controller checks for newer versions:
+
+- About 10 seconds after it starts, then once a day (hourly after a failure)
+- It asks GitHub and Gitee in parallel for the latest **stable** releases of the core and the controller and uses whichever answers first; only the version numbers in the release manifests are read
+- It compares them with the running core (which reports its version from 3.1.10) and the controller; an older core that doesn't report its version is not compared
+
+When a newer version exists, the desktop controller and the WebUI show a notice at the top, such as "New version: Core 3.1.10 → 3.1.11", with links to download the client installer; the **About** page shows the result too. The controller never updates itself: download the latest client installer, run it as administrator (Linux / macOS: `sudo`) and choose **Upgrade**.
+
+- After you close the notice it stays hidden until the controller restarts or an even newer release appears
+- The **mobile** app has the core built in, so it only checks its own version; the notice links to the APKs — install the one for your device's architecture (most phones: `aarch64`) over the old app
+- The **command-line** controller doesn't check by itself; run `msst-net-cli check-update`
+- To turn checks off, set the environment variable `MSST_UPDATE_CHECK=0` for the controller
 
 ---
 

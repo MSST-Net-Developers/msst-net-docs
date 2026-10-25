@@ -7,6 +7,52 @@ description: "This chapter lists the user-visible changes in each MSST-Net relea
 
 {{ $frontmatter.description }}
 
+## 3.1.10
+
+The core and the controller are released as 3.1.10, the client installer as 3.1.5. The IPC protocol moves to 0.5 (additions only): the 3.1.9 controller keeps working, but rule editing, group-linked rules and the other new features need both the core and the controller on 3.1.10.
+
+### Firewall rules
+
+- **Permanent rules can be edited in full**: source (permission group, manual sources, room members), services or ports, action and note, keeping the rule's ID; connections the rule had admitted are re-checked against the edited rule. The wizard starts with the rule's current content
+- **Temporary rules** (rules with an expiry, such as those created by "Allow / Deny" in interactive authorization) can only be viewed and deleted; the list marks them "Temporary" and no longer shows an enable switch
+- The new-rule wizard ends with a **Confirm** step summarizing source, services or ports, action and note; an allow rule covering all ports is flagged once more
+- When you add a manual source and click "Add", the client core recognizes the device or user and shows its name (such as "Bob's PC (pc.bob)"); identifiers it can't recognize can't be added
+- When a rule's ports are exactly those of some common services, the list, the details and the edit wizard show the service names (such as "Minecraft (MCJE)")
+- On mobile (Android) only a rule's note and enabled state can still be changed
+- New in the command-line controller: `msst-net-cli rules edit`, which replaces only what you give; `rules list` marks temporary rules
+- See [Firewall Rules](/en/connect/acl/rules#managing-rules)
+
+### Permission groups
+
+- A rule created with a permission group is **linked** to it: when the group's members change, the rule follows automatically (before, a rule copied the members once)
+- A group still used by rules can't be deleted; permission group management lists the rules that use it
+- Added members are recognized by the core and shown with their names too; they are saved by their fixed IDs, so later mnemonic changes don't affect the group. Members recorded as mnemonics by 3.0.x are migrated automatically after the core starts
+- Rules created with 3.1.9 or earlier aren't linked automatically; to make one follow its group, edit it and pick the group again
+- See [Permission Groups](/en/connect/acl/groups#using-permission-groups-in-rules)
+
+### System firewall and direct connections
+
+- A system firewall drops UDP packets the peer sends first, so direct connections — especially LAN and IPv6 ones — couldn't be established. From 3.1.5 the installer allows the core's UDP port (21031 by default) in the system firewall and removes it on uninstall; the core also checks the rule every time it starts and recreates it when it is missing or stale
+- Windows gets the rule `MSST-Net-Core-UDP` (all network profiles); Linux is handled only while firewalld or ufw runs, and hand-written nftables / iptables rules are left alone; on macOS the application firewall allows the core program
+- See [Installing the Client](/en/connect/install/client#system-firewall)
+
+### Windows permissions
+
+- Fixed: on Windows, accounts in the `MSST-Net Administrators` group were still told the controller is **read-only**. The core only saw the group memberships of the logon session, so the change took effect only after signing out of Windows and back in; now reopening the controller is enough
+- Installer 3.1.5 adds **the user signed in at the desktop** to the admin group on Windows. Before, when a standard user typed another administrator's password to elevate, that administrator's account was added instead
+- While the installer checks that the core has started, the core's log no longer shows warnings such as `failed to send version handshake: The pipe is being closed. (os error 232)`
+- See [Controller](/en/connect/install/controller#access-permissions)
+
+### Update reminder
+
+- The desktop controller and the WebUI check the latest stable releases of the core and the controller on GitHub / Gitee once a day and show a notice at the top, with links to the client installer, when a newer version exists; the **About** page shows the result
+- The Android app checks its own version only, and the notice links to the APKs
+- New in the command-line controller: `msst-net-cli check-update`
+- Set the environment variable `MSST_UPDATE_CHECK=0` to turn checks off
+- See [Controller](/en/connect/install/controller#update-reminder)
+
+---
+
 ## 3.1.9
 
 All fixes in this release are in the core. The controller is released as 3.1.9 too, without functional changes; the IPC protocol is unchanged, so the 3.1.8 controller and the 3.1.4 installer keep working.

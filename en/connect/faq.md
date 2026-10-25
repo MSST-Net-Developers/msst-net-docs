@@ -18,7 +18,7 @@ Check the following:
    ```bash
    sudo systemctl status msst-net
    ```
-3. On Linux / macOS, if the core runs as root, make sure your account has been added to the `msst-net` group (you need to log in again after adding it); otherwise the controller can only connect read-only, or is refused
+3. If the core runs as root / a system service, make sure your account has been added to the admin group (Linux / macOS: `msst-net`; Windows: `MSST-Net Administrators`); otherwise the controller can only connect read-only, or is refused
 4. If the core uses a non-default IPC path, set the same `MSST_IPC_PATH` environment variable for the controller
 5. Check the core's logs for error messages
 
@@ -28,14 +28,28 @@ See: [Controller](/en/connect/install/controller#connecting-to-the-client-core)
 
 ### The controller shows "read-only" and I can't change any settings?
 
-The client core only granted the current system user **viewer** permissions. Add the user to the `msst-net` group:
+The client core only granted the current system user **viewer** permissions. Add the user to the admin group.
+
+Linux / macOS:
 
 ```bash
 sudo groupadd -f msst-net
 sudo usermod -aG msst-net $USER
 ```
 
-After logging in again you'll have admin permissions; there's no need to restart the core.
+Windows (in a Command Prompt run as administrator; replace `<username>` with your everyday account):
+
+```bat
+net localgroup "MSST-Net Administrators" <username> /add
+```
+
+Then **reopen the controller** to get admin permissions — no need to log in again or to restart the core.
+
+::: tip Windows: 3.1.9 and earlier
+Up to 3.1.9 the Windows core only saw the group memberships of your logon session, so after adding the group you had to sign out of Windows and back in. With 3.1.10 it takes effect right away.
+
+Also, installers up to 3.1.4 added the administrator account whose password you typed when elevating (rather than yourself) to the admin group. From 3.1.5 the user signed in at the desktop is added.
+:::
 
 ---
 
@@ -73,6 +87,22 @@ See: [Room Relay](/en/connect/spaces/room_relay#availability-and-automatic-fallb
 
 ---
 
+### Can 3.1.10 be used together with older versions?
+
+Yes, networking is unaffected. When the 3.1.10 controller is connected to an older core, rule editing, group-linked rules, name lookup and the core's update check aren't available (only the note and enabled state can be changed); they work once the core is upgraded too.
+
+The 3.1.10 core and controller can still be installed with installer 3.1.4; allowing the UDP port in the system firewall and adding the desktop user to the admin group on Windows need installer 3.1.5 (the core also adds the firewall rule itself when it starts).
+
+---
+
+### The controller says "New version available"?
+
+From 3.1.10, the desktop controller and the WebUI check the latest stable releases on GitHub / Gitee once a day and show a notice at the top when a newer core or controller exists. The controller doesn't update itself: download the latest client installer as the notice suggests, run it as administrator and choose **Upgrade**. The Android app only checks its own version; download the new APK and install it over the old one.
+
+After you close the notice it stays hidden until the controller restarts or an even newer release appears. To turn checks off, set the environment variable `MSST_UPDATE_CHECK=0` for the controller. With the command-line controller, run `msst-net-cli check-update` at any time.
+
+---
+
 ### Can 3.1.8 be used together with older versions?
 
 Yes, 3.1.8 is fully interoperable with 3.1 clients up to 3.1.7. The faster recovery after switching networks mostly takes effect on the device that switches; for the controller to show why a path changed, the core needs to be 3.1.8 too.
@@ -105,6 +135,8 @@ A direct connection requires:
 - The direct path's round-trip latency is no higher than the relay path's
 
 If the network environment (such as strict NAT or symmetric NAT) can't be traversed, a direct connection may never be established and traffic will always be forwarded through a relay. This is normal and doesn't affect regular use.
+
+The **system firewall** affects direct connections too: it drops UDP packets the peer sends first, so LAN and IPv6 direct connections in particular fail. From 3.1.10 the installer allows the core's UDP port (21031 by default) in the system firewall, and the core checks and restores that rule every time it starts; see [Installing the Client](/en/connect/install/client#system-firewall). Linux hosts with hand-written nftables / iptables rules need to allow inbound UDP 21031 themselves.
 
 After consecutive failed probes, the system gradually lengthens the probing interval (up to 10 minutes); the path view shows the number of failed rounds and when the next probe will happen.
 
@@ -196,7 +228,11 @@ See: [Firewall Rules](/en/connect/acl/rules#connection-tracking)
 
 ### I changed a permission group, but the rules didn't change?
 
-This is expected. A permission group is expanded into its member list when a rule is created, so changing the group later doesn't change rules that already exist. Recreate the rules using the updated group.
+From 3.1.10, rules created with a permission group follow its members automatically. Rules that don't change were created with 3.1.9 or earlier, when a rule only copied the group's members and didn't record the group. Edit the rule and pick the group as its source again to link it.
+
+### Why can't I edit a rule?
+
+**Temporary rules** — rules with an expiry, such as those created by "Allow / Deny" in interactive authorization — can only be viewed and deleted, and are deleted when they expire. Permanent rules can be edited in full; on Android only the note and enabled state can be changed.
 
 See: [Permission Groups](/en/connect/acl/groups)
 

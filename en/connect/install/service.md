@@ -49,6 +49,15 @@ sc.exe start msst-net
 
 When running under the Local System account, the configuration and data directory is `C:\Windows\System32\config\systemprofile\AppData\Roaming\msst-net\`.
 
+Under the Local System account, desktop users only have **viewer** permissions by default. Add your everyday account to the local group `MSST-Net Administrators` (create it first if it doesn't exist) and reopen the controller to get admin permissions:
+
+```powershell
+net localgroup "MSST-Net Administrators" /add
+net localgroup "MSST-Net Administrators" <username> /add
+```
+
+When it starts, the core (from 3.1.10) adds the Windows Firewall rule `MSST-Net-Core-UDP` allowing its UDP port; see [Installing the Client](/en/connect/install/client#system-firewall).
+
 To stop and remove the service:
 
 ```powershell
@@ -101,7 +110,7 @@ sudo groupadd -f msst-net
 sudo usermod -aG msst-net $USER
 ```
 
-This takes effect after you log in again; there is no need to restart the core.
+This takes effect once you reopen the controller; there is no need to log in again or to restart the core.
 
 See: [Controller](/en/connect/install/controller#connecting-to-the-client-core)
 

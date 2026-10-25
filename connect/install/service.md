@@ -49,6 +49,15 @@ sc.exe start msst-net
 
 以本地系统账户运行时，配置与数据目录位于 `C:\Windows\System32\config\systemprofile\AppData\Roaming\msst-net\`。
 
+以本地系统账户运行时，桌面登录用户默认只有**只读**权限。将日常账号加入本地组 `MSST-Net Administrators`（不存在时先创建），重新打开控制器即可获得管理权限：
+
+```powershell
+net localgroup "MSST-Net Administrators" /add
+net localgroup "MSST-Net Administrators" <用户名> /add
+```
+
+核心（3.1.10 起）启动时会在 Windows 防火墙中添加规则 `MSST-Net-Core-UDP`，放行它的 UDP 端口，详见 [《安装客户端》](/connect/install/client#系统防火墙)。
+
 停止与删除服务：
 
 ```powershell
@@ -101,7 +110,7 @@ sudo groupadd -f msst-net
 sudo usermod -aG msst-net $USER
 ```
 
-重新登录系统后生效，无需重启核心。
+重新打开控制器后生效，无需重新登录系统，也无需重启核心。
 
 详见：[《控制器说明》](/connect/install/controller#连接客户端核心)
 

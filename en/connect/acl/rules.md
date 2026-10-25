@@ -27,23 +27,40 @@ Rules are stored and enforced by the client core; the controller only creates, d
 
 On the controller's **Defense** page you can:
 
-- **New Rule**: pick a source, target and action step by step in a wizard
+- **New Rule**: pick a source, target and action step by step in a wizard, then check the rule's summary in the final **Confirm** step
 - **Enable / Disable a rule**: disabled rules stay in the list but don't take part in matching
-- **Edit**: change the rule's note
+- **Edit**: change anything in a permanent rule — source, services or ports, action, note
+- **View**: see the details of a temporary rule
 - **Duplicate as New Rule**: use an existing rule as a template for a new one
 - **Delete** a rule, or **Clear** all rules
 
-The current version only supports changing a rule's **note** and **enabled state**. To change the source, port or action, use "Duplicate as New Rule" and then delete the old rule.
+When a rule's ports are exactly those of some common services, the list shows the service names (such as "Minecraft (MCJE)") and lists any other ports as they are.
 
-With the command-line controller, use the `list`, `add`, `enable`, `disable`, `comment`, `delete` and `clear` subcommands of `msst-net-cli rules`, for example:
+### Permanent and temporary rules
+
+| | Permanent rule | Temporary rule |
+|---|---|---|
+| What it is | A rule without an expiry, including those created by "Always allow / Always deny" in interactive authorization | A rule with an expiry, such as those created by "Allow / Deny" in interactive authorization or temporary rules added from the access log |
+| In the list | Enable switch + Edit button | "Temporary" tag + View button |
+| What you can do | Edit everything, enable / disable, delete | View and delete only; it is deleted automatically when it expires |
+
+When you edit a permanent rule, the wizard starts with the rule's current content (ports that are exactly some common services show as those services), and the rule keeps its ID. Connections the rule had admitted are re-checked against the edited rule.
+
+> On **mobile** (Android) only a rule's note and enabled state can be changed; edit the source, ports or action on the desktop controller or the WebUI.
+
+### Command line
+
+With the command-line controller, use the `list`, `add`, `edit`, `enable`, `disable`, `comment`, `delete` and `clear` subcommands of `msst-net-cli rules`, for example:
 
 ```bash
 msst-net-cli rules add --device pc.alice --service minecraft-java              # allow one device to reach Minecraft Java Edition
 msst-net-cli rules add --user bob --port tcp/8080 --deny                         # deny a user TCP 8080
 msst-net-cli rules add --room-members --port udp/19132 --comment bedrock-lan     # room-level rule
+msst-net-cli rules edit 1a2b --group friends --service ssh --action allow        # change a rule's source, target and action
+msst-net-cli rules edit 1a2b --comment ""                                        # clear the note
 ```
 
-Rules covering all ports (`--all-ports`) come with the same security warning and need confirmation.
+`rules edit` replaces only what you give (source, target, `--action`, `--comment`) and keeps the rest; temporary rules can't be edited. Rules covering all ports (`--all-ports`) come with the same security warning and need confirmation. `rules list` marks temporary rules.
 
 > On **mobile** (Android), rules can't be created manually through the wizard, but they can be added:
 > - When handling an interactive authorization request
@@ -108,7 +125,7 @@ All sources in a single rule must be of the same type.
 
 In the rule wizard, you can:
 
-- **Use a named permission group**: pick from groups you've created (recommended); see [Permission Groups](/en/connect/acl/groups)
+- **Use a named permission group**: pick from groups you've created (recommended). The rule is linked to the group and follows its members when they change; see [Permission Groups](/en/connect/acl/groups)
 - **Specify sources manually**: enter device or user mnemonics or IDs
 - **For Room Mode**: match all current room members without specifying individual members
 
@@ -125,11 +142,13 @@ When specifying sources manually, you can use the following identifiers:
 | User mnemonic | `abjust` | Matches all devices of the specified user |
 | Wildcard | `*` | Matches all devices or all users |
 
-**Mnemonics are resolved to fixed IDs when the rule is created**: the client core looks up the ID for a mnemonic locally first and then with the coordinator, and the rule stores the ID. Therefore:
+**Mnemonics are resolved to fixed IDs when they are added**: after you enter an identifier in the wizard and click "Add", the client core looks up the device or user it refers to — locally first, then with the coordinator — and shows its **name** (such as "Bob's PC (pc.bob)"), so you can check you picked the right one. The rule stores the ID. Therefore:
 
-- If the other party later changes their mnemonic, the rule still points to the original device or user
-- A mnemonic that can't be resolved causes rule creation to fail
+- If the other party later changes their mnemonic or name, the rule still points to the original device or user
+- An identifier that can't be recognized can't be added, and the rule isn't created
 - The rule list still shows the mnemonic entered at creation time, for easier recognition
+
+When the coordinator only returns an ID (for example, the other device has never connected to this one), only the mnemonic or ID is shown.
 
 **Room-level rules** don't need specific IDs; the system matches current room members dynamically when a packet arrives.
 
@@ -260,6 +279,8 @@ Rules can have an **expiry time**, after which they expire automatically and are
 Without an expiry time, a rule is valid permanently.
 
 Expiry is commonly used for temporary authorization: when you choose "Allow" or "Deny" (rather than "Always") in interactive authorization, the system creates a rule that expires after 10 minutes.
+
+A rule with an expiry is a **temporary rule**: it can be viewed and deleted, but not edited or disabled.
 
 ---
 

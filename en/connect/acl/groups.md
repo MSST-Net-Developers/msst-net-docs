@@ -35,6 +35,10 @@ All members of a permission group must be of the same type (all devices, or all 
 
 ## Member Identifiers
 
+When you enter an identifier in permission group management and click "Add", the client core recognizes the device or user and the member shows as "name (identifier)"; identifiers that can't be recognized can't be added. On save, members are recorded by their fixed IDs, so later mnemonic changes don't affect the group.
+
+Once a group has members, its type (device group / user group) can no longer be switched.
+
 Members can be specified by:
 
 - **Device ID** (such as `device-a7f29b3e`)
@@ -52,12 +56,15 @@ For details on identifiers, see:
 
 In the **Source** step of the rule wizard, choose **Use a named permission group**, then pick a device group or user group.
 
-::: warning Note
-A permission group is **expanded into its member list when the rule is created**: the rule copies the group's current members.
+A rule created with a permission group (or edited to use one) is **linked** to it:
 
-Changing the group's members later does **not** change rules that already exist; deleting the group doesn't affect rules created from it either.
+- When the group's members change, linked rules **follow automatically**; connections admitted under a rule are re-checked against the new members
+- In the rule list, linked rules show as "Group 'name' · members…"; permission group management shows how many rules use each group
+- A group can be emptied; its linked rules then match no source
+- **A group still used by rules can't be deleted**: delete those rules first, or change their source to another group or to manual sources
 
-To make a rule reflect new members, recreate the rule from the updated group and delete the old rule.
+::: warning Rules created with 3.1.9 or earlier
+Before 3.1.10, a permission group was expanded into its member list when the rule was created, and the rule didn't record which group it came from. Those rules stay as they are after upgrading and don't follow the group. To link one, edit the rule and pick the group as its source again.
 :::
 
 ---
@@ -83,7 +90,7 @@ Steps:
 3. Create a firewall rule: source is the permission group, target is Minecraft (Java Edition), action is allow
 4. Create another rule: source is the same permission group, target is Terraria
 
-When a new friend joins later, add them to the permission group first, then recreate the relevant rules as needed.
+When a new friend joins later, just add them to the permission group; both rules take effect for them automatically.
 
 ---
 
