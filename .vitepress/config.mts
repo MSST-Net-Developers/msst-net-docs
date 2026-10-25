@@ -103,6 +103,7 @@ export default defineConfig({
   metaChunk: true,
   cleanUrls: true,
   title: "MSST-Net",
+  
   locales: {
     root: {
       label: '简体中文',
@@ -127,7 +128,10 @@ export default defineConfig({
         footer: {
           message: '由 MSST-Net 开发组设计，Claude Code 开发',
           copyright: 'Copyright © 2021-2026 MSST 十周年部计算机办'
-        }
+        },
+        socialLinks: [
+          { icon: 'github', link: 'https://github.com/MSST-Net-Developers' }
+        ]
       }
     },
     en: {
@@ -140,7 +144,10 @@ export default defineConfig({
         footer: {
           message: 'Designed by the MSST-Net Developers, built with Claude Code',
           copyright: 'Copyright © 2021-2026 MSST 10th Anniversary Dept. Computing Office'
-        }
+        },
+        socialLinks: [
+          { icon: 'github', link: 'https://github.com/MSST-Net-Developers' }
+        ]
       }
     }
   }
