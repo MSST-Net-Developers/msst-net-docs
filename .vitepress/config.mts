@@ -127,7 +127,7 @@ export default defineConfig({
         },
         footer: {
           message: '由 MSST-Net 开发组设计，Claude Code 开发',
-          copyright: 'Copyright © 2021-2026 MSST 十周年部计算机办'
+          copyright: 'Copyright © 2021-2026 MSST'
         },
         socialLinks: [
           { icon: 'github', link: 'https://github.com/MSST-Net-Developers' }
@@ -143,7 +143,7 @@ export default defineConfig({
         sidebar: sidebarEn(),
         footer: {
           message: 'Designed by the MSST-Net Developers, built with Claude Code',
-          copyright: 'Copyright © 2021-2026 MSST 10th Anniversary Dept. Computing Office'
+          copyright: 'Copyright © 2021-2026 MSST'
         },
         socialLinks: [
           { icon: 'github', link: 'https://github.com/MSST-Net-Developers' }
